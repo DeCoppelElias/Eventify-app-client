@@ -13,7 +13,7 @@ export default function Groups() {
     }
 
     useEffect(() => {
-        axios.get('https://deployment-backend-app.netlify.app/.netlify/functions/api/getGroups')
+        axios.get('/api/getGroups')
         .then(function (response) {
             setGroupData(response.data)
         })
