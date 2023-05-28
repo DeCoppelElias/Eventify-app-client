@@ -48,24 +48,24 @@ export default function Sidebar() {
       </button>
       <ul style={styles.sidebarMenu}>
         <li style={styles.sidebarMenuItem}>
-          <a href="#" style={styles.sidebarMenuItemLink}>
+          {/* <a style={styles.sidebarMenuItemLink}>
             Home
-          </a>
+          </a> */}
         </li>
         <li style={styles.sidebarMenuItem}>
-          <a href="#" style={styles.sidebarMenuItemLink}>
+          {/* <a style={styles.sidebarMenuItemLink}>
             About
-          </a>
+          </a> */}
         </li>
         <li style={styles.sidebarMenuItem}>
-          <a href="#" style={styles.sidebarMenuItemLink}>
+          {/* <a style={styles.sidebarMenuItemLink}>
             Services
-          </a>
+          </a> */}
         </li>
         <li style={styles.sidebarMenuItem}>
-          <a href="#" style={styles.sidebarMenuItemLink}>
+          {/* <a style={styles.sidebarMenuItemLink}>
             Contact
-          </a>
+          </a> */}
         </li>
       </ul>
     </div>
