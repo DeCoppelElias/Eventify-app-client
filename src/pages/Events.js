@@ -40,7 +40,7 @@ export default function Home() {
     }
 
     useEffect(() => {
-        axios.get('/api/getEvents')
+        axios.get('https://deployment-backend-app.netlify.app/.netlify/functions/api/getEvents')
         .then(function (response) {
             setEventData(response.data);
         })
