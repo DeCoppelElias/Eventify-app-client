@@ -1,44 +1,49 @@
-import EventList from '../components/EventList'
+import React from 'react';
+import { useNavigate} from 'react-router-dom';
 
-export default function GroupList({ groups }) {
-    const styles = {
-        banner: {
-            backgroundColor: '#166281', // Dark blue color for the banner
-            color: '#fff', // Text color for the banner
-            padding: '10px 20px', // Adjust the padding as desired
-            marginBottom: '10px', // Add some margin at the bottom
-            borderRadius: '5px', // Rounded corners for the banner
-            display: 'flex', // Center the content horizontally
-            justifyContent: 'center', // Center the content horizontally
-            alignItems: 'center', // Center the content vertically
-            textAlign: 'center', // Center the text horizontally
-        },
-        groupTitle: {
-          color: '#dddddd', // Light gray color for event title
-          fontSize: '30px',
-          marginBottom: '10px',
-          fontFamily: 'cursive',
-          marginTop: '0',
-        },
-      };
+function GroupBox({ group }) {
+    const id = group.id;
+    const title = group.title;
+    const description = group.description;
+    const tags = group.tags;
+    const navigate = useNavigate();
+
+    const HandleEvent = () => {
+        navigate('/groups/' + String(id))
+    }
 
     return (
-      <div>
-        {typeof groups === 'undefined' ? (
-            <p>Loading...</p>
-        ) : (
-            groups.map((group, i) => (
-                <div>
-                    <div style={styles.banner}>
-                      <div>
-                        <p key={i} style={styles.groupTitle}>{group.title}</p>
-                        <p key={i}>{group.description}</p>
-                      </div>
-                    </div>
-                    <EventList key={i} events={group.events}/>
+        <div className=' bg-gray-700 w-64 h-48 rounded-3xl m-3 shadow-lg shadow-black'>
+            <div className='m-3'>
+                <div className='text-center text-xl text-white mb-5'>
+                    <button onClick={HandleEvent}>
+                        {title}
+                    </button>
                 </div>
-            ))
-        )}
-      </div>
+                <p className='text-white'>{description}</p>
+                <p className='text-white'>{tags} </p>
+            </div>
+        </div>
     );
-  }
+}
+
+export default function GroupList({ groups }) {
+    const amountOfGroups = 10
+
+    let displayGroups = []
+    if (typeof groups !== 'undefined'){
+        displayGroups = groups.slice(0,amountOfGroups);
+    }
+
+    return (
+        <div className='overflow-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-8 pb-8'>
+            {typeof groups === 'undefined' ? (
+                <p>Loading...</p>
+            ) : (
+                displayGroups.map((group, i) => (
+                <GroupBox key={i} group={group} />
+                ))
+            )}
+        </div>
+    );
+}
