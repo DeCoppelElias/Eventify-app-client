@@ -60,17 +60,12 @@ const EventPopup = forwardRef((props, ref) => {
             description: description,
             restricted: false
         }
-
-        axios.get('/api/authenticate', header)
-        .then(function (response) {
-            console.log(response);
-        })
         
         axios.post('/api/createEvent',payload, header)
         .catch(function (error) {
             if (error.response) {
                 if (error.response.status === 400 || error.response.status === 401){
-                    // navigate('/login');
+                    navigate('/login');
                 }
         }})
     }

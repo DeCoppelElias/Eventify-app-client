@@ -57,6 +57,44 @@ export default function EventInfo() {
             }})
     }, [navigate, eventId]);
 
+    function HandleGoing(){
+        const header = {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+
+        const payload = {
+            userId: localStorage.getItem('userId'),
+            eventId: eventData.event.id
+        }
+        
+        axios.post('/api/setGoing',payload, header)
+        .catch(function (error) {
+            if (error.response) {
+                if (error.response.status === 400 || error.response.status === 401){
+                    navigate('/login');
+                }
+        }})
+    }
+
+    function HandleMaybe(){
+        const header = {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+
+        const payload = {
+            userId: localStorage.getItem('userId'),
+            eventId: eventData.event.id
+        }
+        
+        axios.post('/api/setMaybe',payload, header)
+        .catch(function (error) {
+            if (error.response) {
+                if (error.response.status === 400 || error.response.status === 401){
+                    navigate('/login');
+                }
+        }})
+    }
+
     function addDefaultSrc(ev){
         ev.target.src = noImg;
     };
@@ -70,6 +108,14 @@ export default function EventInfo() {
                     <p>Loading...</p>
                 ) : (
                     <div className='w-full h-full'>
+                        <div className='flex absolute -top-14 right-0 bg-gray-800 hover:bg-gray-700 w-32 h-12 rounded-md pr-4 pl-4'>
+                            <img alt="" src={goingIcon} className='w-1/3'></img>
+                            <button className='w-2/3' onClick={HandleGoing}>Going</button>
+                        </div>
+                        <div className='flex absolute -top-14 right-40 bg-gray-800 hover:bg-gray-700 w-32 h-12 rounded-md pr-4 pl-4'>
+                            <img alt="" src={maybeIcon} className='w-1/3'></img>
+                            <button className='w-2/3' onClick={HandleMaybe}>Maybe</button>
+                        </div>
                         <div className='h-1/2 bg-gray-700 pt-5 pb-5 rounded-3xl'>
                             <img className="object-fill w-1/2 h-full m-auto min-w-[50%] rounded-3xl border-blue-200 border-2" alt="" src={`http://localhost:5000/Images/image-${String(eventData.event.id)}.jpg`} onError={addDefaultSrc}/>
                         </div>
@@ -81,18 +127,18 @@ export default function EventInfo() {
                                         Hier komt een map met de locatie
                                     </div> 
                                 </div>
-                                <div className='flex pb-20'>
+                                <div className='flex pb-10'>
                                     <div className='text-4xl pb-5 pt-2 font-semibold mr-10'>
                                         {eventData.event.title}
                                     </div>
                                     <div className='flex pb-5 mt-2'>
                                         <div className='flex bg-gray-800 hover:bg-gray-600 w-32 h-12 rounded-md pr-4 pl-4 mr-4 border-blue-200 border-2'>
                                             <img alt="" src={goingIcon} className='w-1/3'></img>
-                                            <button className='w-2/3'>Going</button>
+                                            <button className='w-2/3' onClick={HandleGoing}>Going</button>
                                         </div>
                                         <div className='flex bg-gray-800 hover:bg-gray-600 w-32 h-12 rounded-md pr-4 pl-4 border-blue-200 border-2'>
                                             <img alt="" src={maybeIcon} className='w-1/3'></img>
-                                            <button className='w-2/3'>Maybe</button>
+                                            <button className='w-2/3' onClick={HandleMaybe}>Maybe</button>
                                         </div>
                                     </div>
                                     <div className='flex pl-4 pr-4'>

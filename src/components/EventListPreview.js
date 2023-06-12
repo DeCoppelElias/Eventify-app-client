@@ -42,10 +42,10 @@ export default function EventList({ events }) {
                 <p>Loading...</p>
             ) : (
                 <div className='h-full w-full'>
-                    <button className='absolute top-8 -right-5 w-12 h-12 bg-gray-800 rounded-full' onClick={ScrollRight}>
+                    <button className='absolute top-8 -right-4 w-12 h-12 bg-gray-800 rounded-full' onClick={ScrollRight}>
                         <img src={rightIcon}></img>
                     </button>
-                    <button className='absolute top-8 -left-5 w-12 h-12 bg-gray-800 rounded-full' onClick={ScrollLeft}>
+                    <button className='absolute top-8 -left-4 w-12 h-12 bg-gray-800 rounded-full' onClick={ScrollLeft}>
                         <img src={leftIcon}></img>
                     </button>
                     <div id='container' className='flex overflow-hidden'>

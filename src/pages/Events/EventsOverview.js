@@ -73,12 +73,12 @@ export default function EventsOverview() {
         <EventsSidebar />
         <div className='h-full w-7/8 pt-28 pr-20 pl-10 bg-gray-900'>
             <CreateEventButton></CreateEventButton>
-            <div className='overflow-hidden h-full '>
+            <div className='overflow-auto h-full '>
                 {yourEventData.events !== undefined && 
                     <div className='bg-gray-800 rounded-md mb-10 w-full'>
                         <div className='pt-3 pl-4 pr-4 w-full'>
                             <div className='pb-3'>
-                                <a href="/events/yourevents" className='text-2xl text-white'>Public events</a>
+                                <a href="/events/yourevents" className='text-2xl text-white'>Your events</a>
                             </div>
                             <EventListPreview events={yourEventData.events}></EventListPreview>
                         </div>
@@ -88,7 +88,7 @@ export default function EventsOverview() {
                     <div className='bg-gray-800 rounded-md mb-10 w-full'>
                         <div className='pt-3 pl-4 pr-4 w-full'>
                             <div className='pb-3'>
-                                <a href="/events/invitedevents" className='text-2xl text-white'>Public events</a>
+                                <a href="/events/invitedevents" className='text-2xl text-white'>Invited events</a>
                             </div>
                             <EventListPreview events={invitedEventData.events}></EventListPreview>
                         </div>
