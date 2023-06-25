@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate} from 'react-router-dom';
-import noImg from '../noimg.png';
+import noImgIcon from '../icons/noImgIcon.svg';
 import tagIcon from '../icons/tagIcon.svg';
 import locationIcon from '../icons/locationIcon.svg';
 import dateIcon from '../icons/dateIcon.svg';
@@ -10,13 +10,16 @@ export default function EventBox({ event }) {
     const title = event.title;
     const location = event.location;
     const date = new Date(event.time);
-    const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday"];
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    const weekday = weekdays[date.getDay()];
-    const day = date.getDate();
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
-    const currentDate = `${weekday} ${day} ${month} ${year}`;
+    let currentDate = '';
+    if (!isNaN(date)){
+        const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday"];
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        const weekday = weekdays[date.getDay()];
+        const day = date.getDate();
+        const month = months[date.getMonth()];
+        const year = date.getFullYear();
+        currentDate = `${weekday} ${day} ${month} ${year}`;
+    }
     
     let tags = ""
     if (event.tags.length > 0){
@@ -33,9 +36,10 @@ export default function EventBox({ event }) {
         navigate('/events/' + String(id))
     }
 
-    const imgPath = `http://localhost:5000/Images/image-${String(id)}.jpg`;
+    const imageType = event.imageType;
+    const imgPath = `http://localhost:5000/Images/image-${String(id)}.${String(imageType)}`;
     function addDefaultSrc(ev){
-        ev.target.src = noImg;
+        ev.target.src = noImgIcon;
     };
 
     return (

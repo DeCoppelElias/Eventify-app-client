@@ -1,7 +1,7 @@
 import React from 'react';
 import EventBox from './EventBox';
 
-export default function EventList({ events }) {
+export default function EventListFull({ events }) {
     const amountOfEvents = events.length;
 
     let displayEvents = []
@@ -15,7 +15,7 @@ export default function EventList({ events }) {
                 <p>Loading...</p>
             ) : (
                 displayEvents.map((event, i) => (
-                <EventBox key={i} event={event} />
+                    <EventBox key={i} event={event} />
                 ))
             )}
         </div>

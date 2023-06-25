@@ -10,11 +10,11 @@ const CreateEventButton = () => {
     }
 
     return (
-        <div className='relative h-0 w-full'>
-            <button className='absolute -top-14 right-0 bg-gray-800 hover:bg-gray-700 w-36 h-12 rounded-md' onClick={HandleEventCreation}>
+        <div className=''>
+            <button className='absolute top-14 right-20 bg-gray-800 hover:bg-gray-700 w-36 h-12 rounded-md' onClick={HandleEventCreation}>
                 <div className='flex'>
                     <div className='w-7 ml-2'>
-                        <img src={plusIcon}></img> 
+                        <img src={plusIcon} alt=''></img> 
                     </div>
                     <div className='m-auto text-white'>
                         Create event

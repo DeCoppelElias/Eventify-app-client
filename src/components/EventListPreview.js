@@ -3,8 +3,12 @@ import EventBox from './EventBox';
 import leftIcon from '../icons/leftIcon.svg';
 import rightIcon from '../icons/rightIcon.svg';
 
+let counter = 0;
+
 export default function EventList({ events }) {
     const amountOfEvents = events.length;
+    counter++;
+    const containerString = 'eventListContainter ' + String(counter);
 
     let displayEvents = []
     if (typeof events !== 'undefined'){
@@ -12,19 +16,19 @@ export default function EventList({ events }) {
     }
 
     function ScrollLeft(){
-        const container = document.getElementById('container');
+        const container = document.getElementById(containerString);
         sideScroll(container,'left',3,600,5);
     }
 
     function ScrollRight(){
-        const container = document.getElementById('container');
+        const container = document.getElementById(containerString);
         sideScroll(container,'right',3,600,5);
     }
 
     function sideScroll(element,direction,speed,distance,step){
         let scrollAmount = 0;
         var slideTimer = setInterval(function(){
-            if(direction == 'left'){
+            if(direction === 'left'){
                 element.scrollLeft -= step;
             } else {
                 element.scrollLeft += step;
@@ -43,15 +47,15 @@ export default function EventList({ events }) {
             ) : (
                 <div className='h-full w-full'>
                     <button className='absolute top-8 -right-4 w-12 h-12 bg-gray-800 rounded-full' onClick={ScrollRight}>
-                        <img src={rightIcon}></img>
+                        <img alt="" src={rightIcon}></img>
                     </button>
                     <button className='absolute top-8 -left-4 w-12 h-12 bg-gray-800 rounded-full' onClick={ScrollLeft}>
-                        <img src={leftIcon}></img>
+                        <img alt="" src={leftIcon}></img>
                     </button>
-                    <div id='container' className='flex overflow-hidden'>
+                    <div id={containerString} className='flex overflow-hidden'>
                         {displayEvents.map((event, i) => (
-                            <div className='pr-4 pl-4'>
-                                <EventBox key={i} event={event} />
+                            <div key={i} className='pr-4 pl-4'>
+                                <EventBox event={event} />
                             </div>
                         ))}
                     </div>

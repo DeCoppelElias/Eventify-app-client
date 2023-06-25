@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from 'react'
+import React, { useEffect, useState} from 'react'
 import EventListPreview from '../../components/EventListPreview'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
@@ -77,6 +77,9 @@ export default function EventsOverview() {
                 {yourEventData.events !== undefined && 
                     <div className='bg-gray-800 rounded-md mb-10 w-full'>
                         <div className='pt-3 pl-4 pr-4 w-full'>
+                            <div className='relative h-full w-full'>
+                                <a href="/events/yourevents" className='absolute top-0 right-0 bg-gray-800 hover:bg-gray-700 text-lg text-white text-center rounded-lg pl-2 pr-2 pt-1 pb-1'>More...</a>
+                            </div>
                             <div className='pb-3'>
                                 <a href="/events/yourevents" className='text-2xl text-white'>Your events</a>
                             </div>
@@ -87,6 +90,9 @@ export default function EventsOverview() {
                 {invitedEventData.events !== undefined && 
                     <div className='bg-gray-800 rounded-md mb-10 w-full'>
                         <div className='pt-3 pl-4 pr-4 w-full'>
+                            <div className='relative h-full w-full'>
+                                <a href="/events/invitedevents" className='absolute top-0 right-0 bg-gray-800 hover:bg-gray-700 text-lg text-white text-center rounded-lg pl-2 pr-2 pt-1 pb-1'>More...</a>
+                            </div>
                             <div className='pb-3'>
                                 <a href="/events/invitedevents" className='text-2xl text-white'>Invited events</a>
                             </div>
