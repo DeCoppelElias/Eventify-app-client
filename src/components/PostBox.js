@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 
-export default function PostBox({ post }) {
+export default function PostBox({ post, HandleDeletePost }) {
     const [like, setLikeValue] = useState(false);
     const [amountLike, setAmountLike] = useState(post.likes.length);
     const [dislike, setDislikeValue] = useState(false);
@@ -109,10 +109,17 @@ export default function PostBox({ post }) {
     }
 
     return (
-        <div className='relative h-full w-1/2 bg-gray-700 mb-10 rounded-lg ml-auto mr-auto'>
+        <div className='relative h-full w-full bg-gray-700 mb-10 rounded-lg ml-auto mr-auto'>
             <div className='absolute -top-3 -left-4 pl-2 pr-2 bg-gray-700 rounded-lg'>
                 <p>{post.creator}</p>
             </div>
+            {post.creator === localStorage.getItem('userId') && (
+                <button onClick={()=>HandleDeletePost(post.id, post.creator)} className='absolute -top-4 -right-4 p-2 bg-gray-700 rounded-full'>
+                    <svg className='w-7 hover:stroke-white stroke-gray-300' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path className="" d="M16 8L8 16M8.00001 8L16 16M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </button>
+            )}
             <div className='bg-gray-800 border-2 border-gray-700 p-4'>
                 <p className='text-3xl'>{post.title}</p>
             </div>
@@ -123,14 +130,14 @@ export default function PostBox({ post }) {
                 <div className='flex p-2'>
                     <div className='flex mr-3'>
                         <button className='h-full mr-1 items-center' onClick={HandleLike}>
-                            <svg className='h-full w-5' viewBox="0 0 24 24" id="Line_Color" data-name="Line Color" xmlns="http://www.w3.org/2000/svg"><path id="primary" d="M12,21c3.9,0,7-2,7-7S14,9,14,3c-3,2-4.37,4.1-5,8A5,5,0,0,1,7,8c-1,1-2,4-2,6C5,17.14,6.28,21,12,21Z" fill="none" stroke={likeColor} stroke-linecap="round" stroke-linejoin="round" stroke-width="2px"></path></svg>
+                            <svg className='h-full w-5' viewBox="0 0 24 24" id="Line_Color" data-name="Line Color" xmlns="http://www.w3.org/2000/svg"><path id="primary" d="M12,21c3.9,0,7-2,7-7S14,9,14,3c-3,2-4.37,4.1-5,8A5,5,0,0,1,7,8c-1,1-2,4-2,6C5,17.14,6.28,21,12,21Z" fill="none" stroke={likeColor} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2px"></path></svg>
                         </button>
                         <p>{amountLike}</p>
                     </div>
                     <div className='flex mr-3'>
                         <button className='h-full mr-1 items-center' onClick={HandleDislike}>
                             <svg className='h-full w-5' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 17L9 20M12 17L15 20M12 17V12M12 17V21M12 7L9 4M12 7L15 4M12 7V12M12 7V3M12 12L7.66988 9.49995M12 12L16.3301 14.4999M12 12L7.66988 14.4999M12 12L16.3301 9.49995M16.3301 14.4999L17.4282 18.598M16.3301 14.4999L20.4282 13.4019M16.3301 14.4999L19.7942 16.5M7.66988 9.49995L3.57181 10.598M7.66988 9.49995L6.57181 5.40187M7.66988 9.49995L4.20578 7.5M16.3301 9.49995L20.4282 10.598M16.3301 9.49995L17.4282 5.40187M16.3301 9.49995L19.7943 7.5M7.66988 14.4999L6.57181 18.598M7.66988 14.4999L3.57181 13.4019M7.66988 14.4999L4.20584 16.5" stroke={dislikeColor} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 17L9 20M12 17L15 20M12 17V12M12 17V21M12 7L9 4M12 7L15 4M12 7V12M12 7V3M12 12L7.66988 9.49995M12 12L16.3301 14.4999M12 12L7.66988 14.4999M12 12L16.3301 9.49995M16.3301 14.4999L17.4282 18.598M16.3301 14.4999L20.4282 13.4019M16.3301 14.4999L19.7942 16.5M7.66988 9.49995L3.57181 10.598M7.66988 9.49995L6.57181 5.40187M7.66988 9.49995L4.20578 7.5M16.3301 9.49995L20.4282 10.598M16.3301 9.49995L17.4282 5.40187M16.3301 9.49995L19.7943 7.5M7.66988 14.4999L6.57181 18.598M7.66988 14.4999L3.57181 13.4019M7.66988 14.4999L4.20584 16.5" stroke={dislikeColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
                         </button>
                         <p>{amountDislike}</p>

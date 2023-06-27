@@ -9,8 +9,6 @@ export default function EventsOverview() {
     const [publicEventData, setPublicEventData] = useState({'events': undefined});
     const [invitedEventData, setInvitedEventData] = useState({'events': undefined});
     const [yourEventData, setYourEventData] = useState({'events': undefined});
-    // const [newEventName, setNewEventName] = useState('');
-    // const [newEventLocation, setNewEventLocation] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {

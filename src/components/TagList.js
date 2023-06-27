@@ -3,6 +3,8 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import TagBox from './TagBox';
 
+let idNumber = 0;
+
 function useComponentVisible(initialIsVisible) {
     const [isComponentVisible, setIsComponentVisible] = useState(initialIsVisible);
     const innerListRef = useRef(null);
@@ -25,12 +27,14 @@ function useComponentVisible(initialIsVisible) {
 }
 
 const TagList = forwardRef((props, ref) => {
+    idNumber++;
     const [tags, SetTags] = useState([]);
     const [availableTags, SetAvailableTags] = useState();
     const [searchTags, SetSearchTags] = useState();
     const { innerListRef, innerButtonRef, isComponentVisible , setIsComponentVisible} = useComponentVisible(false);
     const [addButtonVisible, setAddButtonVisible] = useState(true);
     const navigate = useNavigate();
+    const id = "taglist" + String(idNumber)
 
     useImperativeHandle(ref, () => {
         return {
@@ -74,6 +78,10 @@ const TagList = forwardRef((props, ref) => {
     function HandleSetAvailableTagsVisible(){
         setIsComponentVisible(!isComponentVisible);
 
+        if(!isComponentVisible){
+            document.getElementById('tagdropdown').scrollIntoView({ behavior: 'smooth', block: 'center' });    
+        }
+
         const legalTags = JSON.parse(JSON.stringify(availableTags));
         for (const tag of tags){
             const index = legalTags.indexOf(tag);
@@ -104,7 +112,7 @@ const TagList = forwardRef((props, ref) => {
     }
 
     function HandleSearch(){
-        const query = document.getElementById('default-search').value.split("");
+        const query = document.getElementById(id).value.split("");
 
         const legalTags = JSON.parse(JSON.stringify(availableTags));
         for (const tag of tags){
@@ -147,28 +155,30 @@ const TagList = forwardRef((props, ref) => {
                                     </g>
                                 </svg>
                             </button>
-                            {isComponentVisible && (
-                                <div ref={innerListRef} className='absolute overflow-auto h-52 w-40 top-5 -right-6 bg-gray-900 p-2 rounded-md'>
-                                    <div className='pb-2'>
-                                        <form>   
-                                            <label htmlFor="default-search" className="mb-2 text-sm font-sm text-gray-900 sr-only dark:text-white">Search</label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                    <svg aria-hidden="true" className="w-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <div id='tagdropdown'>
+                                {isComponentVisible && (
+                                    <div ref={innerListRef} className='absolute overflow-auto h-52 w-40 top-5 -right-6 bg-gray-900 p-2 rounded-md'>
+                                        <div className='pb-2'>
+                                            <form>   
+                                                <label htmlFor={id} className="mb-2 text-sm font-sm text-gray-900 sr-only dark:text-white">Search</label>
+                                                <div className="relative">
+                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                        <svg aria-hidden="true" className="w-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                                    </div>
+                                                    <input onChange={HandleSearch} type="search" id={id} className="block w-full p-1 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required/>
                                                 </div>
-                                                <input onChange={HandleSearch} type="search" id="default-search" className="block w-full p-1 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required/>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
+                                        <div className='w-full'>
+                                            {searchTags.map((tag, i) => (
+                                                <button key={i} className='w-full p-1 mb-1 bg-gray-800 hover:bg-gray-700 rounded-md' onClick={() => HandleAddTag(tag)}>
+                                                    {tag}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                    <div className='w-full'>
-                                        {searchTags.map((tag, i) => (
-                                            <button key={i} className='w-full p-1 mb-1 bg-gray-800 hover:bg-gray-700 rounded-md' onClick={() => HandleAddTag(tag)}>
-                                                {tag}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
                      )}
                 </div>
