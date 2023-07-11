@@ -1,13 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import PostBox from './PostBox';
 import PostCreateBox from './PostCreateBox';
 
-export default function PostList({ eventId }) {
+const PostList = forwardRef(({ objectId, type }, ref) => {
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
-    const [createPostVisibility, setCreatePostVisibility] = useState(false)
+    const [createPostVisibility, setCreatePostVisibility] = useState(false);
+
+    useImperativeHandle(ref, () => {
+        return {
+            CreatePost(){
+                setCreatePostVisibility(true);
+                setTimeout(() => {
+                    document.getElementById('postcreatebox').scrollIntoView({ behavior: 'smooth', block: 'start' });   
+                }, 100); 
+            }
+          };
+        });
 
     function HandleCreatePost(postTitle, postText){
         setCreatePostVisibility(false);
@@ -20,7 +31,8 @@ export default function PostList({ eventId }) {
 
         let payload = {
             userId: localStorage.getItem('userId'),
-            eventId: eventId,
+            id: objectId,
+            type: type,
             postTitle: postTitle,
             postText: postText
         }
@@ -36,7 +48,10 @@ export default function PostList({ eventId }) {
 
         payload = {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            params: {eventId: eventId}
+            params: {
+                id: objectId,
+                type: type
+            }
         }
 
         axios.get('/api/getPosts', payload)
@@ -60,7 +75,8 @@ export default function PostList({ eventId }) {
 
         let payload = {
             userId: localStorage.getItem('userId'),
-            eventId: eventId,
+            id: objectId,
+            type: type,
             postId: postId,
             creatorId: creatorId
         }
@@ -76,7 +92,10 @@ export default function PostList({ eventId }) {
 
         payload = {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            params: {eventId: eventId}
+            params: {
+                id: objectId,
+                type: type
+            }
         }
 
         axios.get('/api/getPosts', payload)
@@ -94,7 +113,10 @@ export default function PostList({ eventId }) {
     useEffect(() => {
         let payload = {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            params: {eventId: eventId}
+            params: {
+                id: objectId,
+                type: type
+            }
         }
 
         axios.get('/api/getPosts', payload)
@@ -107,17 +129,19 @@ export default function PostList({ eventId }) {
                 navigate('/login');
               }
             }})
-    }, [navigate, eventId])
+    }, [navigate, objectId, type])
 
     function HandleClickCreatePost(){
         setCreatePostVisibility(!createPostVisibility);
         if(!createPostVisibility){
-            document.getElementById('postcreatebox').scrollIntoView({ behavior: 'smooth', block: 'start' });    
+            setTimeout(() => {
+                document.getElementById('postcreatebox').scrollIntoView({ behavior: 'smooth', block: 'start' });   
+            }, 100); 
         }
     }
 
     return (
-        <div className='h-full w-full pb-20 border-t-2 border-gray-500'>
+        <div className='h-full w-full pb-20'>
             <div className='w-1/2 text-2xl mt-10 mb-10 ml-auto mr-auto border-2 border-gray-400 bg-gray-700 rounded-b-lg hover:bg-gray-600'>
                 <button onClick={HandleClickCreatePost} className='h-full w-full p-3'>Create Post</button>
             </div>
@@ -132,7 +156,8 @@ export default function PostList({ eventId }) {
                         <PostBox key={i} post={post} HandleDeletePost={HandleDeletePost}/>
                 ))}
             </div>
-            
         </div>
     )
-}
+})
+
+export default PostList;

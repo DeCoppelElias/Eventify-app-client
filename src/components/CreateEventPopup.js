@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useEffect, useState } from 'react';
-import noImgIcon from '../icons/noImgIcon.svg'
-import axios from 'axios'
+import noImgIcon from '../icons/noImgIcon.svg';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import TagList from './TagList.js'
 
@@ -151,12 +151,11 @@ const EventPopup = forwardRef((props, ref) => {
                 },
             }
 
-            axios.post('/api/uploadImage',imagePayload, imageHeader)
+            axios.post('/api/uploadEventImage',imagePayload, imageHeader)
             .catch(function (error) {
                 if (error.response) {
                     if (error.response.status === 400 || error.response.status === 401){
-                        // navigate('/login');
-                        console.log("login")
+                        navigate('/login');
                     }
             }})
         })

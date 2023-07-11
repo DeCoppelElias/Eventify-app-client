@@ -1,17 +1,17 @@
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import EventListFull from '../../components/EventListFull'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
-import EventsSidebar from '../../components/EventsSidebar'
-import CreateEventButton from '../../components/CreateEventButton';
-import TagListDropdown from '../../components/TagListDropdown';
+import SearchWithTagsBar from '../../components/SearchWithTagsBar';
+import CreateEventPopup from '../../components/CreateEventPopup';
+import EventsSidebar from '../../components/EventsSidebar';
 
 export default function YourEvents() {
-    const [events, setEvents] = useState();
-    const [searchEvents, setSearchEvents] = useState();
+    const [events, setEvents] = useState([]);
+    const [searchEvents, setSearchEvents] = useState([]);
     const navigate = useNavigate();
-    const [tags, setTags] = useState([]);
-    const [query, setQuery] = useState([]);
+
+    const createEventPopupRef = useRef();
 
     useEffect(() => {
         const payload = {
@@ -38,9 +38,6 @@ export default function YourEvents() {
             return;
         }
 
-        console.log(query)
-        console.log(tags)
-
         const newSearchEvents = events.filter(event => {
             const title = event.title;
             let count = 0;
@@ -65,43 +62,27 @@ export default function YourEvents() {
         setSearchEvents(newSearchEvents);
     }
 
-    function HandleSearch(){
-        const newQuery = document.getElementById('default-search').value.split("")
-        setQuery(newQuery);
-        RefreshSearchEvents(newQuery, tags)
-    }
-
-    function HandleTagChange(newTags){
-        setTags(newTags);
-        RefreshSearchEvents(query, newTags)
-    }
-
     return (
-        <div className='flex overflow-x-hide h-full w-full'>
-            <EventsSidebar />
-            <div className='h-full w-7/8 pt-28 pr-20 pl-10 bg-gray-900'>
-                <CreateEventButton></CreateEventButton>
-                <div className='overflow-auto h-full '>
-                    {searchEvents !== undefined ? (
+        <div className='flex h-full w-full'>
+            <CreateEventPopup ref={createEventPopupRef}/>
+            <div className='h-full w-full bg-gray-900 pr-20 pl-20'>
+                <EventsSidebar createEventPopupRef={createEventPopupRef}/>
+                <div className='w-full h-full pt-28'>
+                    <div className='overflow-auto h-full'>
                         <div className='bg-gray-800 rounded-md mb-10 w-full'>
                             <div className='pt-3 pl-4 pr-4 w-full'>
                                 <div className='flex pb-3'>
-                                    <a href="/events/publicevents" className='w-2/5 text-2xl text-white'>Your events</a>
-                                    <input onChange={HandleSearch} type="search" id="default-search" className="block w-40 h-8 p-1 ml-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" required/>
-                                    <div className='ml-5 flex w-full'>
-                                        <p className='text-white m-auto mt-0 p-1'>Filter: </p>
-                                        <div className='ml-2 w-full'>
-                                            <TagListDropdown HandleTagChange={HandleTagChange}/>
-                                        </div>
-                                    </div>
+                                    <p className='sm:w-1/8 md:w-1/7 lg:w-1/6 xl:w-1/4 text-2xl text-white'>Your Events</p>
+                                    <SearchWithTagsBar RefreshSearch={RefreshSearchEvents}/>
                                 </div>
-                                <EventListFull events={searchEvents}></EventListFull>
+                                {searchEvents.length !== 0 ? (
+                                    <EventListFull events={searchEvents}/>
+                                ) : (
+                                    <p className='text-white pb-5 pt-5'>We did not find any events, sorry!</p>
+                                )}
                             </div>
                         </div>
-                        ) : (
-                            <p className='text-white'>You have not been invited to any events yet!</p>
-                        )
-                    }
+                    </div>
                 </div>
             </div>
         </div>

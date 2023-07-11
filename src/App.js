@@ -10,11 +10,12 @@ import Event from './pages/Events/Event';
 import PublicEvents from './pages/Events/PublicEvents'
 import InvitedEvents from './pages/Events/InvitedEvents'
 import YourEvents from './pages/Events/YourEvents'
-import GroupsSidebar from './components/GroupsSidebar';
-import Group from './pages/Group';
+import Group from './pages/Groups/Group';
 import InvitedGroups from './pages/Groups/InvitedGroups'
 import PublicGroups from './pages/Groups/PublicGroups'
 import YourGroups from './pages/Groups/YourGroups';
+import GoingEvents from './pages/Events/GoingEvents';
+import MaybeEvents from './pages/Events/MaybeEvents';
 
 function App() {
     return (
@@ -32,14 +33,16 @@ function App() {
                     <Route path="yourevents" element={<><GlobalSidebar /><YourEvents/></>}/>
                     <Route path="invitedevents" element={<><GlobalSidebar /><InvitedEvents/></>}/>
                     <Route path="publicevents" element={<><GlobalSidebar /><PublicEvents/></>}/>
+                    <Route path="goingevents" element={<><GlobalSidebar /><GoingEvents/></>}/>
+                    <Route path="maybeevents" element={<><GlobalSidebar /><MaybeEvents/></>}/>
                 </Route>
                 <Route path="/groups">
-                    <Route index element={<><GlobalSidebar /><div className='flex h-full w-full'><GroupsSidebar /><GroupsOverview /></div></>} />
+                    <Route index element={<><GlobalSidebar /><GroupsOverview /></>} />
                     <Route path=":groupId" element={<><GlobalSidebar /><Group /></>}/>
-                    <Route path="overview" element={<><GlobalSidebar /><div className='flex h-full w-full'><GroupsSidebar /><GroupsOverview /></div></>}/>
-                    <Route path="yourgroups" element={<><GlobalSidebar /><div className='flex h-full w-full'><GroupsSidebar /><YourGroups /></div></>}/>
-                    <Route path="invitedgroups" element={<><GlobalSidebar /><div className='flex h-full w-full'><GroupsSidebar /><InvitedGroups /></div></>}/>
-                    <Route path="publicgroups" element={<><GlobalSidebar /><div className='flex h-full w-full'><GroupsSidebar /><PublicGroups /></div></>}/>
+                    <Route path="overview" element={<><GlobalSidebar /><GroupsOverview /></>}/>
+                    <Route path="yourgroups" element={<><GlobalSidebar /><YourGroups /></>}/>
+                    <Route path="invitedgroups" element={<><GlobalSidebar /><InvitedGroups /></>}/>
+                    <Route path="publicgroups" element={<><GlobalSidebar /><PublicGroups /></>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

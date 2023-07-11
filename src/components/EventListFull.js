@@ -10,12 +10,14 @@ export default function EventListFull({ events }) {
     }
 
     return (
-        <div className='grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 pt-2 pb-4'>
+        <div className='flex flex-wrap pt-2 pb-4'>
             {typeof events === 'undefined' ? (
                 <p>Loading...</p>
             ) : (
                 displayEvents.map((event, i) => (
-                    <EventBox key={i} event={event} />
+                    <div key={i} className='p-2'>
+                        <EventBox event={event} />
+                    </div>
                 ))
             )}
         </div>

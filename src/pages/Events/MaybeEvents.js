@@ -10,15 +10,17 @@ export default function PublicEvents() {
     const [events, setEvents] = useState([]);
     const [searchEvents, setSearchEvents] = useState([]);
     const navigate = useNavigate();
+    const userId = localStorage.getItem("userId");
 
     const createEventPopupRef = useRef();
 
     useEffect(() => {
         let payload = {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}`},
+            params: {userId: userId}
         }
 
-        axios.get('/api/getPublicEvents', payload)
+        axios.get('/api/getMaybeEvents', payload)
         .then(function (response) {
             setEvents(response.data.events);
             setSearchEvents(response.data.events);

@@ -1,30 +1,46 @@
 import React from 'react';
+import CreateEventButton from './CreateEventButton';
 
-const EventsSidebar = () => {
+export default function EventsSidebar({createEventPopupRef}){
     return (
-        <div className='pt-20 w-1/8 text-center bg-gray-900'>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg hover:bg-gray-800'>
-                <a href="/events/overview" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Overview
-                </a>
-            </div>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg hover:bg-gray-800'>
-                <a href="/events/yourevents" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Your events
-                </a>
-            </div>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg hover:bg-gray-800'>
-                <a href="/events/invitedevents" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Invited events
-                </a>
-            </div>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg hover:bg-gray-800'>
-                <a href="/events/publicevents" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Public events
-                </a>
+        <div className='relative w-full top-14'>
+            <div className='absolute flex w-full lg:text-base md:text-xs sm:text-xs text-white'>
+                <div className='w-6/7 flex'>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/events/overview" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Overview</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/events/goingevents" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Going Events</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/events/maybeevents" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Maybe Events</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/events/publicevents" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Public Events</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/events/yourevents" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Your Events</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/events/invitedevents" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Event Invitations</p>
+                        </a>
+                    </div>
+                </div>
+                <div className='w-1/7'>
+                    <CreateEventButton HandleEventCreation={() => createEventPopupRef.current.HandleEventCreation()}/>
+                </div>
             </div>
         </div>
     );
 };
-
-export default EventsSidebar;

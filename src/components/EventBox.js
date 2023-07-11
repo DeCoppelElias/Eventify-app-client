@@ -37,7 +37,7 @@ export default function EventBox({ event }) {
     }
 
     const imageType = event.imageType;
-    const imgPath = `http://localhost:5000/Images/image-${String(id)}.${String(imageType)}`;
+    const imgPath = `http://localhost:5000/Images/events/image-${String(id)}.${String(imageType)}`;
     function addDefaultSrc(ev){
         ev.target.src = noImgIcon;
     };

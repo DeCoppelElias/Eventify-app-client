@@ -1,30 +1,36 @@
 import React from 'react';
+import CreateGroupButton from './CreateGroupButton';
 
-const GroupsSidebar = () => {
+export default function GroupsSidebar({createGroupPopupRef}){
     return (
-        <div className=' w-1/6 pt-10 text-center bg-gray-800'>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg'>
-                <a href="/groups/overview" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Overview
-                </a>
-            </div>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg'>
-                <a href="/groups/yourgroups" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Your groups
-                </a>
-            </div>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg'>
-                <a href="/groups/invitedgroups" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Invited groups
-                </a>
-            </div>
-            <div className='pb-1 pt-1 ml-3 mr-3 mb-10 border-2 border-gray-600 rounded-lg'>
-                <a href="/groups/publicgroups" className='lg:text-lg md:text-base sm:text-sm font-light text-white'>
-                    Public groups
-                </a>
+        <div className='relative w-full top-14'>
+            <div className='absolute flex w-full lg:text-base md:text-xs sm:text-xs text-white'>
+                <div className='w-6/7 flex'>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/groups/overview" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Overview</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/groups/yourgroups" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Your Groups</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/groups/invitedgroups" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Group Invitations</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/groups/publicgroups" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Public Groups</p>
+                        </a>
+                    </div>
+                </div>
+                <div className='w-1/7'>
+                    <CreateGroupButton HandleGroupCreation={() => createGroupPopupRef.current.HandleGroupCreation()}/>
+                </div>
             </div>
         </div>
     );
 };
-
-export default GroupsSidebar;

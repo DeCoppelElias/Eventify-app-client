@@ -10,15 +10,17 @@ export default function PublicEvents() {
     const [events, setEvents] = useState([]);
     const [searchEvents, setSearchEvents] = useState([]);
     const navigate = useNavigate();
+    const userId = localStorage.getItem("userId");
 
     const createEventPopupRef = useRef();
 
     useEffect(() => {
         let payload = {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}`},
+            params: {userId: userId}
         }
 
-        axios.get('/api/getPublicEvents', payload)
+        axios.get('/api/getGoingEvents', payload)
         .then(function (response) {
             setEvents(response.data.events);
             setSearchEvents(response.data.events);
@@ -71,7 +73,7 @@ export default function PublicEvents() {
                         <div className='bg-gray-800 rounded-md mb-10 w-full'>
                             <div className='pt-3 pl-4 pr-4 w-full'>
                                 <div className='flex pb-3'>
-                                    <p className='sm:w-1/8 md:w-1/7 lg:w-1/6 xl:w-1/4 text-2xl text-white'>Public Events</p>
+                                    <p className='sm:w-1/8 md:w-1/7 lg:w-1/6 xl:w-1/4 text-2xl text-white'>Going Events</p>
                                     <SearchWithTagsBar RefreshSearch={RefreshSearchEvents}/>
                                 </div>
                                 {searchEvents.length !== 0 ? (

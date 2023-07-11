@@ -5,7 +5,7 @@ import TagBox from './TagBox';
 
 let idNumber = 0;
 
-const TagListDropdown = (props) => {
+const TagListDropdown = ({HandleTagChange}) => {
     idNumber++;
     const id = "taglistdropdown" + String(idNumber);
     const [tags, SetTags] = useState([]);
@@ -14,13 +14,11 @@ const TagListDropdown = (props) => {
     const [DropdownVisible, SetDropdownVisible] = useState(false);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
-    const [addButtonVisible, setAddButtonVisible] = useState(true);
     const navigate = useNavigate();
-    const {HandleTagChange} = props;
 
     useEffect(() => {
-        HandleTagChange(tags)
-    }, [tags]);
+        HandleTagChange(tags);
+    }, [tags, HandleTagChange]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -59,20 +57,12 @@ const TagListDropdown = (props) => {
             newTags.splice(index, 1); 
         }
         SetTags(newTags);
-
-        if(newTags.length < 6){
-            setAddButtonVisible(true);
-        }
     }
 
     function HandleAddTag(tag){
         let newTags = JSON.parse(JSON.stringify(tags));
         newTags.push(tag);
         SetTags(newTags);
-
-        if (newTags.length === 6) {
-            setAddButtonVisible(false);
-        }
         
         const newSearchTags = JSON.parse(JSON.stringify(searchTags));
         const index = searchTags.indexOf(tag);
@@ -150,7 +140,7 @@ const TagListDropdown = (props) => {
                             </div>
                         )}
                     </div>
-                     <div className='absolute w-4/5 top-0 left-20 flex flex-wrap'>
+                     <div className='absolute sm:w-[100px] md:w-[200px] lg:w-[400px] xl:w-[500px] top-0 left-20 flex flex-wrap'>
                         {tags.map((tag, i) => (
                             <div key={i} className='pl-2'>
                                 {TagBox(tag,HandleDelete)}
