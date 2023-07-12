@@ -1,5 +1,6 @@
 import React from 'react';
-import CreateGroupButton from './CreateGroupButton';
+import PrettyButton from './PrettyButton';
+import PlusIcon from '../icons/plusIcon.svg';
 
 export default function GroupsSidebar({createGroupPopupRef}){
     return (
@@ -12,8 +13,13 @@ export default function GroupsSidebar({createGroupPopupRef}){
                         </a>
                     </div>
                     <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
-                        <a href="/groups/yourgroups" className='flex items-center h-full'>
-                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Your Groups</p>
+                        <a href="/groups/subscribedgroups" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Subscribed Groups</p>
+                        </a>
+                    </div>
+                    <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
+                        <a href="/groups/publicgroups" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Public Groups</p>
                         </a>
                     </div>
                     <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
@@ -22,13 +28,13 @@ export default function GroupsSidebar({createGroupPopupRef}){
                         </a>
                     </div>
                     <div className='mr-5 rounded-lg border-b-2 border-gray-500 bg-gray-800 hover:bg-gray-700'>
-                        <a href="/groups/publicgroups" className='flex items-center h-full'>
-                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Public Groups</p>
+                        <a href="/groups/yourgroups" className='flex items-center h-full'>
+                            <p className='lg:pr-8 lg:pl-8 md:pr-4 md:pl-4'>Your Groups</p>
                         </a>
                     </div>
                 </div>
                 <div className='w-1/7'>
-                    <CreateGroupButton HandleGroupCreation={() => createGroupPopupRef.current.HandleGroupCreation()}/>
+                    <PrettyButton ButtonClickFunction={() => createGroupPopupRef.current.HandleGroupCreation()} Icon={PlusIcon} Text="Create Group"/>
                 </div>
             </div>
         </div>

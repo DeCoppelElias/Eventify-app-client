@@ -19,7 +19,7 @@ export default function InvitedEvents() {
             params: { userId : localStorage.getItem('userId')}
         }
         
-        axios.get('/api/getInvitedEvents', payload)
+        axios.get('/api/getNotRepliedInvitedEvents', payload)
         .then(function (response) {
             setEvents(response.data.events);
             setSearchEvents(response.data.events);

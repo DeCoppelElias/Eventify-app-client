@@ -4,23 +4,32 @@ import axios from 'axios'
 import PostBox from './PostBox';
 import PostCreateBox from './PostCreateBox';
 
-const PostList = forwardRef(({ objectId, type }, ref) => {
+interface Props{
+    objectId: string,
+    type: string
+}
+
+export interface CreatePostI{
+    createPost(): void;
+}
+
+const PostList = forwardRef<CreatePostI, Props>(({ objectId, type }, ref) => {
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
     const [createPostVisibility, setCreatePostVisibility] = useState(false);
 
     useImperativeHandle(ref, () => {
         return {
-            CreatePost(){
+            createPost(){
                 setCreatePostVisibility(true);
                 setTimeout(() => {
-                    document.getElementById('postcreatebox').scrollIntoView({ behavior: 'smooth', block: 'start' });   
+                    document.getElementById('postcreatebox')?.scrollIntoView({ behavior: 'smooth', block: 'start' });   
                 }, 100); 
             }
           };
         });
 
-    function HandleCreatePost(postTitle, postText){
+    function HandleCreatePost(postTitle: string, postText: string){
         setCreatePostVisibility(false);
 
         const header = {
@@ -46,7 +55,7 @@ const PostList = forwardRef(({ objectId, type }, ref) => {
             }
         })
 
-        payload = {
+        let getPostPayload = {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: {
                 id: objectId,
@@ -54,7 +63,7 @@ const PostList = forwardRef(({ objectId, type }, ref) => {
             }
         }
 
-        axios.get('/api/getPosts', payload)
+        axios.get('/api/getPosts', getPostPayload)
         .then(function (response) {
             setPosts(response.data.posts);
         })
@@ -66,7 +75,7 @@ const PostList = forwardRef(({ objectId, type }, ref) => {
             }})
     }
 
-    function HandleDeletePost(postId, creatorId){
+    function HandleDeletePost(postId: string, creatorId: string){
         const header = {
             headers: { 
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -90,7 +99,7 @@ const PostList = forwardRef(({ objectId, type }, ref) => {
             }
         })
 
-        payload = {
+        let getPostsPayload = {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: {
                 id: objectId,
@@ -98,7 +107,7 @@ const PostList = forwardRef(({ objectId, type }, ref) => {
             }
         }
 
-        axios.get('/api/getPosts', payload)
+        axios.get('/api/getPosts', getPostsPayload)
         .then(function (response) {
             setPosts(response.data.posts);
         })
@@ -135,7 +144,7 @@ const PostList = forwardRef(({ objectId, type }, ref) => {
         setCreatePostVisibility(!createPostVisibility);
         if(!createPostVisibility){
             setTimeout(() => {
-                document.getElementById('postcreatebox').scrollIntoView({ behavior: 'smooth', block: 'start' });   
+                document.getElementById('postcreatebox')?.scrollIntoView({ behavior: 'smooth', block: 'start' });   
             }, 100); 
         }
     }

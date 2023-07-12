@@ -16,6 +16,9 @@ import PublicGroups from './pages/Groups/PublicGroups'
 import YourGroups from './pages/Groups/YourGroups';
 import GoingEvents from './pages/Events/GoingEvents';
 import MaybeEvents from './pages/Events/MaybeEvents';
+import NotGoingEvents from './pages/Events/NotGoingEvents';
+import AnsweredEvents from './pages/Events/AnsweredEvents';
+import SubscribedGroups from './pages/Groups/SubscribedGroups';
 
 function App() {
     return (
@@ -35,6 +38,8 @@ function App() {
                     <Route path="publicevents" element={<><GlobalSidebar /><PublicEvents/></>}/>
                     <Route path="goingevents" element={<><GlobalSidebar /><GoingEvents/></>}/>
                     <Route path="maybeevents" element={<><GlobalSidebar /><MaybeEvents/></>}/>
+                    <Route path="notgoingevents" element={<><GlobalSidebar /><NotGoingEvents/></>}/>
+                    <Route path="answeredevents" element={<><GlobalSidebar /><AnsweredEvents/></>}/>
                 </Route>
                 <Route path="/groups">
                     <Route index element={<><GlobalSidebar /><GroupsOverview /></>} />
@@ -43,6 +48,7 @@ function App() {
                     <Route path="yourgroups" element={<><GlobalSidebar /><YourGroups /></>}/>
                     <Route path="invitedgroups" element={<><GlobalSidebar /><InvitedGroups /></>}/>
                     <Route path="publicgroups" element={<><GlobalSidebar /><PublicGroups /></>}/>
+                    <Route path="subscribedgroups" element={<><GlobalSidebar /><SubscribedGroups /></>}/>
                 </Route>
             </Routes>
         </BrowserRouter>

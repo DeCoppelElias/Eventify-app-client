@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom';
 import GroupInfo from '../../components/GroupInfo';
@@ -10,6 +10,7 @@ export default function Group() {
     const [group, setGroup] = useState();
     const [exists, setExists] = useState(false);
     const [administrator, setAdministrator] = useState(false);
+    const [subscribed, setSubscribed] = useState(false);
     const createEventPopupRef = useRef();
     const invitePeoplePopupRef = useRef();
     const groupInfoRef = useRef();
@@ -24,6 +25,23 @@ export default function Group() {
     function HandleInvitePeople(){
         invitePeoplePopupRef.current.HandleInvitePeople();
     }
+
+    function HandleEventCreation(){
+        createEventPopupRef.current.HandleEventCreation()
+    }
+
+    function HandleSubscribe(){
+        if(!subscribed){
+            groupInfoRef.current.HandleSubscribe();
+        }
+        else{
+            groupInfoRef.current.HandleUnSubscribe();
+        }
+    }
+
+    const NotifySubscribed = useCallback((bool) => {
+        setSubscribed(bool);
+    }, [])
 
     useEffect(() => {
         const payload = {
@@ -57,10 +75,17 @@ export default function Group() {
                     <div className='flex h-full w-full bg-gray-900 text-white'>
                         <div className='w-96'></div>
                         <div className='h-full w-full'>
-                            <GroupInfoSidebar restricted={group.restricted} administrator={administrator} createEventPopupRef={createEventPopupRef} HandleInvitePeople={() => HandleInvitePeople()} HandleClickCreatePost={() => HandleClickCreatePost()}/>
+                            <GroupInfoSidebar 
+                                restricted={group.restricted} 
+                                administrator={administrator}
+                                subscribed={subscribed} 
+                                HandleEventCreation={() => HandleEventCreation()} 
+                                HandleInvitePeople={() => HandleInvitePeople()} 
+                                HandleClickCreatePost={() => HandleClickCreatePost()}
+                                HandleSubscribe={() => HandleSubscribe()}/>
                             <div className='w-full h-full pt-28'>
                                 <div className='w-full h-full bg-gray-800 rounded-md text-lg'>
-                                    <GroupInfo group={group} ref={groupInfoRef}/>
+                                    <GroupInfo group={group} ref={groupInfoRef} NotifySubscribed={NotifySubscribed}/>
                                 </div>
                             </div>
                         </div>

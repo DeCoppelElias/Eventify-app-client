@@ -6,13 +6,16 @@ import rightIcon from '../icons/rightIcon.svg';
 let counter = 0;
 
 export default function EventList({ events }) {
-    const amountOfEvents = events.length;
-    counter++;
     const containerString = 'eventListContainter ' + String(counter);
-
+    counter++;
+    
     let displayEvents = []
-    if (typeof events !== 'undefined'){
-        displayEvents = events.slice(0,amountOfEvents);
+    if(events !== undefined){
+        const amountOfEvents = events.length;
+
+        if (typeof events !== 'undefined'){
+            displayEvents = events.slice(0,amountOfEvents);
+        }
     }
 
     function ScrollLeft(){
@@ -41,9 +44,9 @@ export default function EventList({ events }) {
     }
 
     return (
-        <div className='relative h-full pt-2 pb-4'>
+        <div className='relative h-full pt-2 pb-4 text-white'>
             {typeof events === 'undefined' ? (
-                <p>Loading...</p>
+                <p>We did not find any events, sorry!</p>
             ) : (
                 <div className='h-full w-full'>
                     <button className='absolute top-8 -right-4 w-12 h-12 bg-gray-800 hover:bg-gray-700 rounded-full' onClick={ScrollRight}>

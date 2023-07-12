@@ -1,29 +1,29 @@
 import React, { useEffect, useState, useRef} from 'react'
-import EventListFull from '../../components/EventListFull'
+import GroupList from '../../components/GroupList'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import GroupsSidebar from '../../components/GroupsSidebar'
 import SearchWithTagsBar from '../../components/SearchWithTagsBar';
-import CreateEventPopup from '../../components/CreateEventPopup';
-import EventsSidebar from '../../components/EventsSidebar';
+import CreateGroupPopup from '../../components/CreateGroupPopup';
 
-export default function GoingEvents() {
-    const [events, setEvents] = useState([]);
-    const [searchEvents, setSearchEvents] = useState([]);
+export default function PublicGroups() {
+    const [groups, SetGroups] = useState([]);
+    const [searchGroups, SetSearchGroups] = useState([]);
     const navigate = useNavigate();
     const userId = localStorage.getItem("userId");
 
-    const createEventPopupRef = useRef();
+    const createGroupPopupRef = useRef();
 
     useEffect(() => {
         let payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}`},
-            params: {userId: userId}
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          params: {userId: userId}
         }
 
-        axios.get('/api/getGoingEvents', payload)
+        axios.get('/api/getSubscribedGroups', payload)
         .then(function (response) {
-            setEvents(response.data.events);
-            setSearchEvents(response.data.events);
+            SetGroups(response.data.groups);
+            SetSearchGroups(response.data.groups);
         })
         .catch(function (error) {
             if (error.response) {
@@ -31,16 +31,16 @@ export default function GoingEvents() {
                 navigate('/login');
               }
             }})
-    }, [navigate])
+    }, [navigate, userId])
 
-    function RefreshSearchEvents(query, tags){
+    function RefreshSearchGroups(query, tags){
         if (query.length === 0 && tags.length === 0){
-            setSearchEvents(events);
+            SetSearchGroups(groups);
             return;
         }
 
-        const newSearchEvents = events.filter(event => {
-            const title = event.title;
+        const newSearchGroups = groups.filter(group => {
+            const title = group.title;
             let count = 0;
             title.split('').forEach(letter => {
                 if(count < query.length && (query[count] === letter || query[count] === letter.toUpperCase() || query[count].toUpperCase() === letter)) { 
@@ -50,7 +50,7 @@ export default function GoingEvents() {
 
             let tagsValid = true;
             for (const tag of tags){
-                const index = event.tags.indexOf(tag);
+                const index = group.tags.indexOf(tag);
                 if (index === -1){
                     tagsValid = false;
                     break;
@@ -60,26 +60,26 @@ export default function GoingEvents() {
             return count === query.length && tagsValid;
         });
 
-        setSearchEvents(newSearchEvents);
+        SetSearchGroups(newSearchGroups);
     }
 
     return (
         <div className='flex h-full w-full'>
-            <CreateEventPopup ref={createEventPopupRef}/>
+            <CreateGroupPopup ref={createGroupPopupRef}/>
             <div className='h-full w-full bg-gray-900 pr-20 pl-20'>
-                <EventsSidebar createEventPopupRef={createEventPopupRef}/>
+                <GroupsSidebar createGroupPopupRef={createGroupPopupRef}/>
                 <div className='w-full h-full pt-28'>
                     <div className='overflow-auto h-full'>
                         <div className='bg-gray-800 rounded-md mb-10 w-full'>
                             <div className='pt-3 pl-4 pr-4 w-full'>
                                 <div className='flex pb-3'>
-                                    <p className='sm:w-1/8 md:w-1/7 lg:w-1/6 xl:w-1/4 text-2xl text-white'>Going Events</p>
-                                    <SearchWithTagsBar RefreshSearch={RefreshSearchEvents}/>
+                                    <p className='sm:w-1/8 md:w-1/7 lg:w-1/6 xl:w-1/4 text-2xl text-white'>Subscribed Groups</p>
+                                    <SearchWithTagsBar RefreshSearch={RefreshSearchGroups}/>
                                 </div>
-                                {searchEvents.length !== 0 ? (
-                                    <EventListFull events={searchEvents}/>
+                                {searchGroups.length !== 0 ? (
+                                    <GroupList groups={searchGroups}/>
                                 ) : (
-                                    <p className='text-white pb-5 pt-5'>We did not find any events, sorry!</p>
+                                    <p className='text-white pb-5 pt-5'>We did not find any groups, sorry!</p>
                                 )}
                             </div>
                         </div>

@@ -19,7 +19,7 @@ export default function InvitedGroups() {
             params: { userId : localStorage.getItem('userId')}
         }
         
-        axios.get('/api/getInvitedGroups', payload)
+        axios.get('/api/getNotRepliedInvitedGroups', payload)
         .then(function (response) {
             SetGroups(response.data.groups);
             SetSearchGroups(response.data.groups);

@@ -36,7 +36,7 @@ export default function GroupsOverview() {
             params: { userId : localStorage.getItem('userId')}
         }
         
-        axios.get('/api/getInvitedGroups', payload)
+        axios.get('/api/getNotRepliedInvitedGroups', payload)
         .then(function (response) {
             if (response.data.groups.length > 0){
                 setInvitedGroupData(response.data);

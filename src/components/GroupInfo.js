@@ -7,12 +7,20 @@ import infoIcon from '../icons/infoIcon.svg';
 import PostList from './PostList';
 import EventList from './EventListFull';
 
-const GroupInfo = forwardRef(({group}, ref) => {
+const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
     const [events, setEvents] = useState();
     const [tags, setTags] = useState();
     const [tabState, setTabState] = useState("posts");
+    const subscribedColor = {
+        true: "#ff6666",
+        false: "#99ccff",
+    }
+    const [subscribed, setSubscribed] = useState(false);
+    const [amountSubscribed, setAmountSubscribed] = useState(group.subscribedUsers.length);
     const navigate = useNavigate();
     const postListRef = useRef();
+
+    const userId = localStorage.getItem("userId");
 
     useImperativeHandle(ref, () => {
         return {
@@ -20,13 +28,64 @@ const GroupInfo = forwardRef(({group}, ref) => {
                 setTabState("posts");
                 
                 setTimeout(() => {
-                    postListRef.current.CreatePost();
+                    postListRef.current.createPost();
                 }, 100);
+            },
+            HandleSubscribe(){
+                const header = {
+                    headers: { 
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+        
+                const payload = {
+                    userId: localStorage.getItem('userId'),
+                    groupId: group.id
+                }
+                
+                axios.post('/api/subscribeToGroup',payload, header)
+                .catch(function (error) {
+                    if (error.response) {
+                        if (error.response.status === 400 || error.response.status === 401){
+                            navigate('/login');
+                        }
+                }})
+                .then(res => {
+                    setSubscribed(true);
+                    setAmountSubscribed(a => a+1)
+                    NotifySubscribed(true);
+                })
+            },
+            HandleUnSubscribe(){
+                const header = {
+                    headers: { 
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+        
+                const payload = {
+                    userId: localStorage.getItem('userId'),
+                    groupId: group.id
+                }
+                
+                axios.post('/api/unSubscribeFromGroup',payload, header)
+                .catch(function (error) {
+                    if (error.response) {
+                        if (error.response.status === 400 || error.response.status === 401){
+                            navigate('/login');
+                        }
+                }})
+                .then(res => {
+                    setSubscribed(false);
+                    setAmountSubscribed(a => a-1);
+                    NotifySubscribed(false);
+                })
             }
         };
-    }, []);
+    }, [group.id, navigate, NotifySubscribed]);
 
     useEffect(() => {
+        console.log("refresh")
         const payload = {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: { eventIds : group.events}
@@ -53,6 +112,12 @@ const GroupInfo = forwardRef(({group}, ref) => {
         setTags(tags);
     }, [navigate, group]);
 
+    useEffect(() => {
+        const bool = group.subscribedUsers.includes(userId);
+        setSubscribed(bool);
+        NotifySubscribed(bool);
+    }, [NotifySubscribed, userId, group.subscribedUsers]);
+
     function addDefaultSrc(ev){
         ev.target.src = noImgIcon;
     };
@@ -77,8 +142,22 @@ const GroupInfo = forwardRef(({group}, ref) => {
                     <div className='h-2/5 pt-4'>
                         <div className='relative pl-20 w-full'>
                             <div className='flex pb-10'>
-                                <div className='text-4xl pb-5 pt-2 font-semibold mr-10'>
+                                <div className='text-4xl pb-5 pt-2 font-semibold mr-10 w-3/4'>
                                     {group.title}
+                                </div>
+                                <div className='flex h-12 rounded-lg justify-center p-2 m-2'>
+                                    <div className="h-full w-8 mr-1 flex ">
+                                        <svg className='h-full w-full' fill="#ffffff" viewBox="0 0 24 24" id="date-check" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" >
+                                            <g id="SVGRepo_bgCarrier" strokeWidth="0"/>
+                                            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"/>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path id="primary" d="M20,21H4a1,1,0,0,1-1-1V9H21V20A1,1,0,0,1,20,21ZM21,5a1,1,0,0,0-1-1H4A1,1,0,0,0,3,5V9H21Z" fill="none" stroke={subscribedColor[subscribed]} strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"/>
+                                                <path id="secondary" d="M16,3V6M8,3V6" fill="none" stroke="#ffffff" strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"/>
+                                                <polyline id="secondary-2" data-name="secondary" points="9 15 11 17 15 13" fill="none" stroke="#ffffff" strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"/>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <p className='text-lg w-1/3'>{amountSubscribed}</p>
                                 </div>
                             </div>
                             <div className='pb-20 w-1/2'>

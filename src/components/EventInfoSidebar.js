@@ -1,6 +1,6 @@
 import React from 'react';
-import CreatePostButton from './CreatePostButton';
-import InvitePeopleButton from './InvitePeopleButton';
+import PrettyButton from './PrettyButton';
+import PostIcon from '../icons/postIcon.svg';
 
 export default function EventInfoSidebar({HandleInvitePeople, HandleClickCreatePost, administrator, restricted}){
 
@@ -8,10 +8,10 @@ export default function EventInfoSidebar({HandleInvitePeople, HandleClickCreateP
         <div className='relative w-full top-14'>
             <div className='absolute flex w-full lg:text-base md:text-xs sm:text-xs text-white'>
                 <div className='flex w-full flex-row-reverse'>
-                    <CreatePostButton HandleClickCreatePost={HandleClickCreatePost}/>
+                    <PrettyButton ButtonClickFunction={HandleClickCreatePost} Icon={PostIcon} Text="Create Post"/>
                     {administrator && 
                         <>{restricted && 
-                            <InvitePeopleButton HandleInvitePeople={HandleInvitePeople}/>
+                            <PrettyButton ButtonClickFunction={HandleInvitePeople} Icon={PostIcon} Text="Invite People"/>
                         }</>
                     }
                 </div>

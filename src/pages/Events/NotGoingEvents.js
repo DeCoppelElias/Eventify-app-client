@@ -6,7 +6,7 @@ import SearchWithTagsBar from '../../components/SearchWithTagsBar';
 import CreateEventPopup from '../../components/CreateEventPopup';
 import EventsSidebar from '../../components/EventsSidebar';
 
-export default function GoingEvents() {
+export default function NotGoingEvents() {
     const [events, setEvents] = useState([]);
     const [searchEvents, setSearchEvents] = useState([]);
     const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function GoingEvents() {
             params: {userId: userId}
         }
 
-        axios.get('/api/getGoingEvents', payload)
+        axios.get('/api/getNotGoingEvents', payload)
         .then(function (response) {
             setEvents(response.data.events);
             setSearchEvents(response.data.events);

@@ -1,23 +1,41 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom';
-import noImgIcon from '../icons/noImgIcon.svg';
-import locationIcon from '../icons/locationIcon.svg';
-import tagIcon from '../icons/tagIcon.svg';
-import dateIcon from '../icons/dateIcon.svg';
-import infoIcon from '../icons/infoIcon.svg';
+import { Event } from "@backend/Event.js";
+import { CreatePostI } from './PostList';
 import PostList from './PostList';
+const noImgIcon = require('../icons/noImgIcon.svg') as string;
+const locationIcon = require('../icons/noImgIcon.svg') as string;
+const tagIcon = require('../icons/noImgIcon.svg') as string;
+const dateIcon = require('../icons/noImgIcon.svg') as string;
+const infoIcon = require('../icons/noImgIcon.svg') as string;
+// import noImgIcon from '../icons/noImgIcon.svg';
+// import locationIcon from '../icons/locationIcon.svg';
+// import tagIcon from '../icons/tagIcon.svg';
+// import dateIcon from '../icons/dateIcon.svg';
+// import infoIcon from '../icons/infoIcon.svg';
 
-const EventInfo = forwardRef(({event}, ref) => {
-    const [eventTime, setEventTime] = useState();
-    const [eventTags, setEventTags] = useState();
-    const [state, setState] = useState("");
+interface Props {
+    event: Event;
+  }
+
+const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
+    const [eventTime, setEventTime] = useState("");
+    const [eventTags, setEventTags] = useState("");
+    enum State{
+        going = 'going',
+        maybe = 'maybe',
+        notgoing = 'notgoing',
+        nothing = 'nothing'
+    }
+    const [state, setState] = useState(State.nothing);
     const [amountGoing, setAmountGoing] = useState(0);
     const [amountMaybe, setAmountMaybe] = useState(0);
     const [maybeColor, setMaybeColor] = useState("#99ccff");
     const [goingColor, setGoingColor] = useState("#99ccff");
+    const [notGoingColor, setNotGoingColor] = useState("#99ccff");
     const navigate = useNavigate();
-    const postListRef = useRef();
+    const postListRef = useRef<CreatePostI>(null);
 
     let {eventId} = useParams();
 
@@ -25,7 +43,7 @@ const EventInfo = forwardRef(({event}, ref) => {
         return {
             HandleClickCreatePost(){
                 setTimeout(() => {
-                    postListRef.current.CreatePost();
+                    postListRef.current?.createPost();
                 }, 100);
             }
         };
@@ -34,7 +52,7 @@ const EventInfo = forwardRef(({event}, ref) => {
     useEffect(() => {
         const date = new Date(event.time);
         let currentDate = '';
-        if (!isNaN(date)){
+        if (date !== undefined){
             const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday"];
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             const weekday = weekdays[date.getDay()];
@@ -44,8 +62,18 @@ const EventInfo = forwardRef(({event}, ref) => {
             currentDate = `${weekday} ${day} ${month} ${year}`;
         }
         setEventTime(currentDate);
-        setGoing(event.going.includes(localStorage.getItem('userId')));
-        setMaybe(event.maybe.includes(localStorage.getItem('userId')));
+        if(event.going.includes(localStorage.getItem('userId'))){
+            setState(State.going);
+            setGoingColor("#ff6666");
+        }
+        if(event.maybe.includes(localStorage.getItem('userId'))){
+            setState(State.maybe);
+            setMaybeColor("#ff6666");
+        }
+        if(event.notGoing.includes(localStorage.getItem('userId'))){
+            setState(State.notgoing);
+            setNotGoingColor("#ff6666");
+        }
         setAmountGoing(event.going.length);
         setAmountMaybe(event.maybe.length);
 
@@ -57,29 +85,7 @@ const EventInfo = forwardRef(({event}, ref) => {
             tags += " " + String(event.tags[i]);
         }
         setEventTags(tags);
-    }, [event])
-
-    function setMaybe(bool){
-        if (bool){
-            setMaybeColor("#ff0066");
-        }
-        else{
-            setMaybeColor("#99ccff");
-        }
-
-        setMaybeValue(bool);
-    }
-
-    function setGoing(bool){
-        if (bool){
-            setGoingColor("#ff0066");
-        }
-        else{
-            setGoingColor("#99ccff");
-        }
-
-        setGoingValue(bool);
-    }
+    }, [event, State])
 
     function HandleGoing(){
         const header = {
@@ -89,7 +95,7 @@ const EventInfo = forwardRef(({event}, ref) => {
         const payload = {
             userId: localStorage.getItem('userId'),
             eventId: event.id,
-            going: !going
+            going: state !== State.going
         }
         
         axios.post('/api/setGoing',payload, header)
@@ -100,19 +106,24 @@ const EventInfo = forwardRef(({event}, ref) => {
                 }
         }});
 
-        setGoing(!going);
-
-        if (!going){
-            setAmountGoing(amountGoing+1);
-        }
-        else{
-            setAmountGoing(amountGoing-1);
-        }
         
-        if (maybe){
-            setMaybe(false);
+        if (state === State.maybe){
             setAmountMaybe(amountMaybe-1);
         }
+
+        if (state === State.going){
+            setAmountGoing(amountGoing-1);
+            setState(State.nothing);
+            setGoingColor("#99ccff");
+        }
+        else{
+            setAmountGoing(amountGoing+1);
+            setState(State.going);
+            setGoingColor("#ff6666");
+        }
+
+        setNotGoingColor("#99ccff");
+        setMaybeColor("#99ccff");
     }
 
     function HandleMaybe(){
@@ -123,7 +134,7 @@ const EventInfo = forwardRef(({event}, ref) => {
         const payload = {
             userId: localStorage.getItem('userId'),
             eventId: event.id,
-            maybe: !maybe
+            maybe: state !== State.maybe
         }
         
         axios.post('/api/setMaybe',payload, header)
@@ -134,22 +145,65 @@ const EventInfo = forwardRef(({event}, ref) => {
                 }
         }});
 
-        setMaybe(!maybe);
+        if (state === State.going){
+            setAmountGoing(amountGoing-1);
+        }
 
-        if (!maybe){
-            setAmountMaybe(amountMaybe+1);
+        if (state === State.maybe){
+            setAmountMaybe(amountMaybe-1);
+            setState(State.nothing);
+            setMaybeColor("#99ccff");
         }
         else{
+            setAmountMaybe(amountMaybe+1);
+            setState(State.maybe);
+            setMaybeColor("#ff6666");
+        }
+
+        setNotGoingColor("#99ccff");
+        setGoingColor("#99ccff");
+    }
+
+    function HandleNotGoing(){
+        const header = {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+
+        const payload = {
+            userId: localStorage.getItem('userId'),
+            eventId: event.id,
+            notGoing: state !== State.notgoing
+        }
+        
+        axios.post('/api/setNotGoing',payload, header)
+        .catch(function (error) {
+            if (error.response) {
+                if (error.response.status === 400 || error.response.status === 401){
+                    navigate('/login');
+                }
+        }});
+
+        if (state === State.going){
+            setAmountGoing(amountGoing-1);
+        }
+        if (state === State.maybe){
             setAmountMaybe(amountMaybe-1);
         }
 
-        if (going){
-            setGoing(false);
-            setAmountGoing(amountGoing-1);
+        if (state === State.notgoing){
+            setState(State.nothing);
+            setNotGoingColor("#99ccff");
         }
+        else{
+            setState(State.notgoing);
+            setNotGoingColor("#ff6666");
+        }
+
+        setMaybeColor("#99ccff");
+        setGoingColor("#99ccff");
     }
 
-    function addDefaultSrc(ev){
+    function addDefaultSrc(ev: any){
         ev.target.src = noImgIcon;
     };
 
@@ -168,8 +222,8 @@ const EventInfo = forwardRef(({event}, ref) => {
                                 <div className='text-4xl pb-5 pt-2 font-semibold mr-10'>
                                     {event.title}
                                 </div>
-                                <div className='flex pb-5 mt-2'>
-                                    <div className={!going ? 
+                                <div className='flex pb-5 mt-2 text-sm'>
+                                    <div className={state !== State.going ? 
                                         'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 mr-4 border-blue-200 border-2' : 
                                         'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 mr-4 border-red-500 border-2'}>
                                         <button className='flex justify-center items-center w-full h-full' onClick={HandleGoing}>
@@ -187,9 +241,9 @@ const EventInfo = forwardRef(({event}, ref) => {
                                             <p>Going</p>
                                         </button>
                                     </div>
-                                    <div className={!maybe ? 
-                                        'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 border-blue-200 border-2' : 
-                                        'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 border-red-500 border-2'}>
+                                    <div className={state !== State.maybe ? 
+                                        'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 mr-4 border-blue-200 border-2' : 
+                                        'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 mr-4 border-red-500 border-2'}>
                                         <button className='flex justify-center items-center w-full h-full' onClick={HandleMaybe}>
                                             <div className="h-full w-8 mr-1">
                                                 <svg className="h-full w-full" viewBox="0 0 24 24" id="date-question" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" >
@@ -202,13 +256,13 @@ const EventInfo = forwardRef(({event}, ref) => {
                                             <p>Maybe</p>
                                         </button>
                                     </div>
-                                    <div className={!maybe ? 
+                                    <div className={state !== State.notgoing ? 
                                         'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 border-blue-200 border-2' : 
                                         'flex bg-gray-800 hover:bg-gray-600 h-12 rounded-md pr-4 pl-4 border-red-500 border-2'}>
-                                        <button className='flex justify-center items-center w-full h-full' onClick={HandleMaybe}>
+                                        <button className='flex justify-center items-center w-full h-full' onClick={HandleNotGoing}>
                                             <div className="h-full w-8 mr-1">
                                                 <svg className="h-full w-full" viewBox="0 0 24 24" id="date-question" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" >
-                                                    <path id="primary" d="M20,21H4a1,1,0,0,1-1-1V9H21V20A1,1,0,0,1,20,21ZM21,5a1,1,0,0,0-1-1H4A1,1,0,0,0,3,5V9H21Z" fill="none" stroke={maybeColor} strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"></path>
+                                                    <path id="primary" d="M20,21H4a1,1,0,0,1-1-1V9H21V20A1,1,0,0,1,20,21ZM21,5a1,1,0,0,0-1-1H4A1,1,0,0,0,3,5V9H21Z" fill="none" stroke={notGoingColor} strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"></path>
                                                     <path id="secondary" d="M16,3V6M8,3V6" fill="none" stroke="#ffffff" strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"></path>
                                                     <path id="secondary-2" data-name="secondary" d="M12,15h.5A1.5,1.5,0,0,0,14,13.5h0A1.5,1.5,0,0,0,12.5,12H11" fill="none" stroke="#ffffff" strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"></path>
                                                     <line id="secondary-upstroke" x1="11.95" y1="18" x2="12.05" y2="18" fill="none" stroke="#ffffff" strokeLinecap='round' strokeLinejoin='round' strokeWidth="2"></line>
@@ -218,7 +272,7 @@ const EventInfo = forwardRef(({event}, ref) => {
                                         </button>
                                     </div>
                                 </div>
-                                <div className='flex pl-16'>
+                                <div className='flex ml-4'>
                                     <div className='flex h-12 rounded-lg justify-center p-2 m-2'>
                                         <div className="h-full w-8 mr-1 flex ">
                                             <svg className='h-full w-full' fill="#ffffff" viewBox="0 0 24 24" id="date-check" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" >
@@ -271,9 +325,11 @@ const EventInfo = forwardRef(({event}, ref) => {
                                     )}
                                 </div>
                             </div>
-                            <div className='pr-20'>
-                                <PostList ref={postListRef} objectId={eventId} type={"event"}></PostList>
-                            </div>
+                            {eventId !== undefined && 
+                                <div className='pr-20'>
+                                    <PostList ref={postListRef} objectId={eventId} type={"event"}></PostList>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
