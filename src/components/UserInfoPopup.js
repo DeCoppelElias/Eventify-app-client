@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useNavigate } from 'react-router-dom';
 import logoutIcon from '../icons/logoutIcon.svg';
+import { signOut } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 const UserInfoPopup = forwardRef(({user}, ref) => {
     const [componentVisible, setComponentVisible] = useState(false);
@@ -32,14 +34,23 @@ const UserInfoPopup = forwardRef(({user}, ref) => {
         };
     }, []);
 
-    const handleLogout = () => {
-        localStorage.setItem('token', null);
-        navigate('/login');
+    const handleLogout = async () => {
+        try {
+            await signOut(auth).then(
+                function (){
+                    if (auth.currentUser === null){
+                        navigate("/login")
+                    }
+                }
+            )
+        } catch (err){
+            console.error(err);
+        }
     };
 
     return (
-        <div className={`h-screen w-screen absolute top-0 left-0 overflow-hidden pointer-events-none`}>
-            <div className={`h-screen w-screen absolute top-0 left-0 z-10 ease-in-out duration-300 pointer-events-auto ${componentVisible ? "scale-100" : " scale-0"}`}>
+        <div className={`h-full w-full absolute top-0 left-0 overflow-clip pointer-events-none`}>
+            <div className={`h-full w-full absolute top-0 left-0 z-10 ease-in-out duration-300 pointer-events-auto ${componentVisible ? "scale-100" : " scale-0"}`}>
                 
             </div>
             <div ref={innerRef} className={`z-20 bg-gray-800 border-2 border-gray-700 border-t-0 border-r-0 absolute top-11 right-0 rounded-b-md ease-in-out duration-100 pointer-events-auto ${componentVisible ? " translate-y-0 scale-100" : " -translate-y-20 scale-0"}`}>
@@ -47,16 +58,8 @@ const UserInfoPopup = forwardRef(({user}, ref) => {
                     {user !== undefined &&
                         <div>
                             <div className="flex">
-                                <p className="text-gray-400">First Name: </p>
-                                <p className="ml-2">{user.firstName}</p>
-                            </div>
-                            <div className="flex">
-                                <p className="text-gray-400">Last Name: </p>
-                                <p className="ml-2">{user.lastName}</p>
-                            </div>
-                            <div className="flex">
-                                <p className="text-gray-400">Username: </p>
-                                <p className="ml-2">{user.username}</p>
+                                <p className="text-gray-400">Name: </p>
+                                <p className="ml-2">{user.displayName}</p>
                             </div>
                             <div className="flex">
                                 <p className="text-gray-400">Email: </p>

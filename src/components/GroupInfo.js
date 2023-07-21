@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle} from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
 import noImgIcon from '../icons/noImgIcon.svg';
 import tagIcon from '../icons/tagIcon.svg';
 import infoIcon from '../icons/infoIcon.svg';
 import PostList from './PostList';
 import EventList from './EventListFull';
+import {auth, getUserId} from "../config/firebase"
 
 const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
     const [events, setEvents] = useState();
@@ -17,10 +17,7 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
     }
     const [subscribed, setSubscribed] = useState(false);
     const [amountSubscribed, setAmountSubscribed] = useState(group.subscribedUsers.length);
-    const navigate = useNavigate();
     const postListRef = useRef();
-
-    const userId = localStorage.getItem("userId");
 
     useImperativeHandle(ref, () => {
         return {
@@ -32,24 +29,11 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
                 }, 100);
             },
             HandleSubscribe(){
-                const header = {
-                    headers: { 
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                }
-        
                 const payload = {
-                    userId: localStorage.getItem('userId'),
                     groupId: group.id
                 }
                 
-                axios.post('/api/subscribeToGroup',payload, header)
-                .catch(function (error) {
-                    if (error.response) {
-                        if (error.response.status === 400 || error.response.status === 401){
-                            navigate('/login');
-                        }
-                }})
+                axios.post('/api/subscribeToGroup',payload)
                 .then(res => {
                     setSubscribed(true);
                     setAmountSubscribed(a => a+1)
@@ -57,24 +41,11 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
                 })
             },
             HandleUnSubscribe(){
-                const header = {
-                    headers: { 
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                }
-        
                 const payload = {
-                    userId: localStorage.getItem('userId'),
                     groupId: group.id
                 }
                 
-                axios.post('/api/unSubscribeFromGroup',payload, header)
-                .catch(function (error) {
-                    if (error.response) {
-                        if (error.response.status === 400 || error.response.status === 401){
-                            navigate('/login');
-                        }
-                }})
+                axios.post('/api/unSubscribeFromGroup',payload)
                 .then(res => {
                     setSubscribed(false);
                     setAmountSubscribed(a => a-1);
@@ -82,24 +53,16 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
                 })
             }
         };
-    }, [group.id, navigate, NotifySubscribed]);
+    }, [group.id, NotifySubscribed]);
 
     useEffect(() => {
-        console.log("refresh")
         const payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: { eventIds : group.events}
         }
 
         axios.get('/api/getEvents', payload)
         .then(function (response) {
-            setEvents(response.data.events);
-        }).catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-            }
+            setEvents(response?.data.events);
         })
 
         let tags = ""
@@ -110,13 +73,16 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
             tags += " " + String(group.tags[i]);
         }
         setTags(tags);
-    }, [navigate, group]);
+    }, [group]);
 
     useEffect(() => {
-        const bool = group.subscribedUsers.includes(userId);
-        setSubscribed(bool);
-        NotifySubscribed(bool);
-    }, [NotifySubscribed, userId, group.subscribedUsers]);
+        getUserId()
+        .then(function(userId){
+            const bool = group.subscribedUsers.includes(userId);
+            setSubscribed(bool);
+            NotifySubscribed(bool);
+        })
+    }, [NotifySubscribed, group.subscribedUsers]);
 
     function addDefaultSrc(ev){
         ev.target.src = noImgIcon;

@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef} from 'react'
-import EventListFull from '../../components/EventListFull'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef} from 'react';
+import EventListFull from '../../components/EventListFull';
+import axios from 'axios';
 import SearchWithTagsBar from '../../components/SearchWithTagsBar';
 import CreateEventPopup from '../../components/CreateEventPopup';
 import EventsSidebar from '../../components/EventsSidebar';
@@ -9,29 +8,16 @@ import EventsSidebar from '../../components/EventsSidebar';
 export default function NotGoingEvents() {
     const [events, setEvents] = useState([]);
     const [searchEvents, setSearchEvents] = useState([]);
-    const navigate = useNavigate();
-    const userId = localStorage.getItem("userId");
 
     const createEventPopupRef = useRef();
 
     useEffect(() => {
-        let payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}`},
-            params: {userId: userId}
-        }
-
-        axios.get('/api/getNotGoingEvents', payload)
+        axios.get('/api/getNotGoingEvents')
         .then(function (response) {
-            setEvents(response.data.events);
-            setSearchEvents(response.data.events);
+            setEvents(response?.data.events);
+            setSearchEvents(response?.data.events);
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
-    }, [navigate])
+    }, [])
 
     function RefreshSearchEvents(query, tags){
         if (query.length === 0 && tags.length === 0){

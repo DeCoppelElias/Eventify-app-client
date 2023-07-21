@@ -1,35 +1,23 @@
-import React, { useEffect, useState, useRef} from 'react'
-import GroupList from '../../components/GroupList'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
-import GroupsSidebar from '../../components/GroupsSidebar'
+import React, { useEffect, useState, useRef} from 'react';
+import GroupList from '../../components/GroupList';
+import axios from 'axios';
+import GroupsSidebar from '../../components/GroupsSidebar';
 import SearchWithTagsBar from '../../components/SearchWithTagsBar';
 import CreateGroupPopup from '../../components/CreateGroupPopup';
 
 export default function PublicGroups() {
     const [groups, SetGroups] = useState([]);
     const [searchGroups, SetSearchGroups] = useState([]);
-    const navigate = useNavigate();
 
     const createGroupPopupRef = useRef();
 
     useEffect(() => {
-        let payload = {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-
-        axios.get('/api/getPublicGroups', payload)
+        axios.get('/api/getPublicGroups')
         .then(function (response) {
-            SetGroups(response.data.groups);
-            SetSearchGroups(response.data.groups);
+            SetGroups(response?.data.groups);
+            SetSearchGroups(response?.data.groups);
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
-    }, [navigate])
+    }, [])
 
     function RefreshSearchGroups(query, tags){
         if (query.length === 0 && tags.length === 0){

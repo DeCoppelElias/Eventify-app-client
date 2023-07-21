@@ -1,6 +1,5 @@
 import React, { useState, useEffect,useRef } from 'react';
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import TagBox from './TagBox';
 
 let idNumber = 0;
@@ -14,7 +13,6 @@ const TagListDropdown = ({HandleTagChange}) => {
     const [DropdownVisible, SetDropdownVisible] = useState(false);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         HandleTagChange(tags);
@@ -33,22 +31,12 @@ const TagListDropdown = ({HandleTagChange}) => {
     }, []);
 
     useEffect(() => {
-        let payload = {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-
-        axios.get('/api/getTags', payload)
+        axios.get('/api/getTags')
         .then(function (response) {
-            SetAvailableTags(response.data.tags);
-            SetSearchTags(response.data.tags);
+            SetAvailableTags(response?.data.tags);
+            SetSearchTags(response?.data.tags);
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
-    }, [navigate])
+    }, [])
 
     function HandleDelete(tag){
         let index = tags.indexOf(tag);

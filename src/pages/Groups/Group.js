@@ -1,10 +1,11 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
 import axios from 'axios'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import GroupInfo from '../../components/GroupInfo';
 import GroupInfoSidebar from '../../components/GroupInfoSidebar';
 import InvitePeoplePopup from '../../components/InvitePeoplePopup';
 import CreateEventPopup from '../../components/CreateEventPopup';
+import { getUserId } from "../../config/firebase";
 
 export default function Group() {
     const [group, setGroup] = useState();
@@ -14,9 +15,7 @@ export default function Group() {
     const createEventPopupRef = useRef();
     const invitePeoplePopupRef = useRef();
     const groupInfoRef = useRef();
-    const navigate = useNavigate();
     let {groupId} = useParams();
-    const userId = localStorage.getItem("userId");
 
     function HandleClickCreatePost(){
         groupInfoRef.current.HandleClickCreatePost();
@@ -27,7 +26,8 @@ export default function Group() {
     }
 
     function HandleEventCreation(){
-        createEventPopupRef.current.HandleEventCreation()
+        createEventPopupRef.current.HandleEventCreation();
+        createEventPopupRef.current.SetGroup(group);
     }
 
     function HandleSubscribe(){
@@ -44,27 +44,24 @@ export default function Group() {
     }, [])
 
     useEffect(() => {
-        const payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        let payload = {
             params: { groupId : groupId}
         }
 
         axios.get('/api/getGroup', payload)
         .then(function (response) {
-            setGroup(response.data.group);
+            setGroup(response?.data.group);
             setExists(true);
 
-            const index = response.data.group.administrators.indexOf(userId);
-            if (index > -1){
-                setAdministrator(true);
-            }
-        }).catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
+            getUserId()
+            .then(function(userId){
+                const index = response?.data.group.administrators.indexOf(userId);
+                if (index > -1){
+                    setAdministrator(true);
                 }
-            }})
-    }, [navigate, groupId, userId]);
+            })
+        })
+    }, [groupId]);
     
     return (
         <div className='w-full h-full bg-gray-900 text-white'>

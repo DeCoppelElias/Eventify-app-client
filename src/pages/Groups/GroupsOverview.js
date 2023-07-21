@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef} from 'react'
 import GroupList from '../../components/GroupList'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
 import CreateGroupPopup from '../../components/CreateGroupPopup';
 import GroupsSidebar from '../../components/GroupsSidebar';
 
@@ -9,64 +8,31 @@ export default function GroupsOverview() {
     const [publicGroupData, setPublicGroupData] = useState({'groups': undefined});
     const [invitedGroupData, setInvitedGroupData] = useState({'groups': undefined});
     const [yourGroupData, setYourGroupData] = useState({'groups': undefined});
-    const navigate = useNavigate();
 
     const createGroupPopupRef = useRef();
 
     useEffect(() => {
-        let payload = {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-
-        axios.get('/api/getPublicGroups', payload)
+        axios.get('/api/getPublicGroups')
         .then(function (response) {
-            if (response.data.groups.length > 0){
-                setPublicGroupData(response.data);
+            if (response?.data.groups.length > 0){
+                setPublicGroupData(response?.data);
             }
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
-
-        payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            params: { userId : localStorage.getItem('userId')}
-        }
         
-        axios.get('/api/getNotRepliedInvitedGroups', payload)
+        axios.get('/api/getNotRepliedInvitedGroups')
         .then(function (response) {
-            if (response.data.groups.length > 0){
-                setInvitedGroupData(response.data);
+            if (response?.data.groups.length > 0){
+                setInvitedGroupData(response?.data);
             }
         })
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-                }
-            }})
         
-        payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            params: { userId : localStorage.getItem('userId')}
-        }
-        
-        axios.get('/api/getYourGroups', payload)
+        axios.get('/api/getYourGroups')
         .then(function (response) {
-            if (response.data.groups.length > 0){
-                setYourGroupData(response.data);
+            if (response?.data.groups.length > 0){
+                setYourGroupData(response?.data);
             }
         })
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-                }
-            }})
-    }, [navigate])
+    }, [])
 
     return (
         <div className='flex h-full w-full'>

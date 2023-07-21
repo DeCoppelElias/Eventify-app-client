@@ -1,53 +1,29 @@
-import React, { useEffect, useState, useRef} from 'react'
-import EventListPreview from '../../components/EventListPreview'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef} from 'react';
+import EventListPreview from '../../components/EventListPreview';
+import axios from 'axios';
 import CreateEventPopup from '../../components/CreateEventPopup';
 import EventsSidebar from '../../components/EventsSidebar';
 
 export default function EventsOverview() {
     const [publicEventData, setPublicEventData] = useState({'events': undefined});
     const [invitedEventData, setInvitedEventData] = useState({'events': undefined});
-    const navigate = useNavigate();
-
     const createEventPopupRef = useRef();
 
     useEffect(() => {
-        let payload = {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-
-        axios.get('/api/getPublicEvents', payload)
+        axios.get('/api/getPublicEvents')
         .then(function (response) {
-            if (response.data.events.length > 0){
-                setPublicEventData(response.data);
+            if (response?.data.events.length > 0){
+                setPublicEventData(response?.data);
             }
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
-
-        payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            params: { userId : localStorage.getItem('userId')}
-        }
         
-        axios.get('/api/getNotRepliedInvitedEvents', payload)
+        axios.get('/api/getNotRepliedInvitedEvents')
         .then(function (response) {
-            if (response.data.events.length > 0){
-                setInvitedEventData(response.data);
+            if (response?.data.events.length > 0){
+                setInvitedEventData(response?.data);
             }
         })
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-                }
-            }})
-    }, [navigate])
+    }, [])
 
     return (
     <div className='flex h-full w-full'>

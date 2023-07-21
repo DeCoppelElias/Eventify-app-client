@@ -1,14 +1,19 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import axios from 'axios'
-import { useNavigate, useParams } from 'react-router-dom';
 import { Event } from "@backend/Event.js";
 import { CreatePostI } from './PostList';
+import { useParams } from 'react-router-dom';
 import PostList from './PostList';
+import {
+    format,
+} from 'date-fns'
+import {getUserId} from "../config/firebase"
 const noImgIcon = require('../icons/noImgIcon.svg') as string;
 const locationIcon = require('../icons/noImgIcon.svg') as string;
 const tagIcon = require('../icons/noImgIcon.svg') as string;
 const dateIcon = require('../icons/noImgIcon.svg') as string;
 const infoIcon = require('../icons/noImgIcon.svg') as string;
+
 // import noImgIcon from '../icons/noImgIcon.svg';
 // import locationIcon from '../icons/locationIcon.svg';
 // import tagIcon from '../icons/tagIcon.svg';
@@ -34,7 +39,6 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
     const [maybeColor, setMaybeColor] = useState("#99ccff");
     const [goingColor, setGoingColor] = useState("#99ccff");
     const [notGoingColor, setNotGoingColor] = useState("#99ccff");
-    const navigate = useNavigate();
     const postListRef = useRef<CreatePostI>(null);
 
     let {eventId} = useParams();
@@ -50,30 +54,34 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
     }, []);
 
     useEffect(() => {
-        const date = new Date(event.time);
+        const startTime = new Date(event.startTime);
+        const endTime = new Date(event.endTime);
         let currentDate = '';
-        if (date !== undefined){
+        if (startTime !== undefined && endTime !== undefined){
             const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday"];
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-            const weekday = weekdays[date.getDay()];
-            const day = date.getDate();
-            const month = months[date.getMonth()];
-            const year = date.getFullYear();
-            currentDate = `${weekday} ${day} ${month} ${year}`;
+            const weekday = weekdays[startTime.getDay()];
+            const day = startTime.getDate();
+            const month = months[startTime.getMonth()];
+            const year = startTime.getFullYear();
+            currentDate = `${weekday} ${day} ${month} ${year}: ${format(startTime, 'h:mm a')} - ${format(endTime, 'h:mm a')}`;
         }
         setEventTime(currentDate);
-        if(event.going.includes(localStorage.getItem('userId'))){
-            setState(State.going);
-            setGoingColor("#ff6666");
-        }
-        if(event.maybe.includes(localStorage.getItem('userId'))){
-            setState(State.maybe);
-            setMaybeColor("#ff6666");
-        }
-        if(event.notGoing.includes(localStorage.getItem('userId'))){
-            setState(State.notgoing);
-            setNotGoingColor("#ff6666");
-        }
+        getUserId()
+        .then(function(userId){
+            if(event.going.includes(userId)){
+                setState(State.going);
+                setGoingColor("#ff6666");
+            }
+            if(event.maybe.includes(userId)){
+                setState(State.maybe);
+                setMaybeColor("#ff6666");
+            }
+            if(event.notGoing.includes(userId)){
+                setState(State.notgoing);
+                setNotGoingColor("#ff6666");
+            }
+        })
         setAmountGoing(event.going.length);
         setAmountMaybe(event.maybe.length);
 
@@ -85,27 +93,15 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
             tags += " " + String(event.tags[i]);
         }
         setEventTags(tags);
-    }, [event, State])
+    }, [event, State.going, State.maybe, State.notgoing])
 
     function HandleGoing(){
-        const header = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-
         const payload = {
-            userId: localStorage.getItem('userId'),
             eventId: event.id,
             going: state !== State.going
         }
         
-        axios.post('/api/setGoing',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-        }});
-
+        axios.post('/api/setGoing',payload)
         
         if (state === State.maybe){
             setAmountMaybe(amountMaybe-1);
@@ -127,23 +123,12 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
     }
 
     function HandleMaybe(){
-        const header = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-
         const payload = {
-            userId: localStorage.getItem('userId'),
             eventId: event.id,
             maybe: state !== State.maybe
         }
         
-        axios.post('/api/setMaybe',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-        }});
+        axios.post('/api/setMaybe',payload)
 
         if (state === State.going){
             setAmountGoing(amountGoing-1);
@@ -165,23 +150,12 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
     }
 
     function HandleNotGoing(){
-        const header = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-
         const payload = {
-            userId: localStorage.getItem('userId'),
             eventId: event.id,
             notGoing: state !== State.notgoing
         }
         
-        axios.post('/api/setNotGoing',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-        }});
+        axios.post('/api/setNotGoing',payload)
 
         if (state === State.going){
             setAmountGoing(amountGoing-1);

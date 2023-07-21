@@ -1,23 +1,25 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate} from 'react-router-dom';
 import noImgIcon from '../icons/noImgIcon.svg';
 import tagIcon from '../icons/tagIcon.svg';
 import locationIcon from '../icons/locationIcon.svg';
 import dateIcon from '../icons/dateIcon.svg';
+import axios from 'axios';
 
 export default function EventBox({ event }) {
     const id = event.id;
     const title = event.title;
     const location = event.location;
-    const date = new Date(event.time);
+    const startTime = new Date(event.startTime);
+    const endTime = new Date(event.endTime);
     let currentDate = '';
-    if (!isNaN(date)){
+    if (startTime !== undefined && endTime !== undefined){
         const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday"];
         const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        const weekday = weekdays[date.getDay()];
-        const day = date.getDate();
-        const month = months[date.getMonth()];
-        const year = date.getFullYear();
+        const weekday = weekdays[startTime.getDay()];
+        const day = startTime.getDate();
+        const month = months[startTime.getMonth()];
+        const year = startTime.getFullYear();
         currentDate = `${weekday} ${day} ${month} ${year}`;
     }
     

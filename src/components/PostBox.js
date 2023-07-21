@@ -1,23 +1,28 @@
 import React, { useEffect, useState} from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import {getUserId} from "../config/firebase"
 
 export default function PostBox({ post, HandleDeletePost }) {
     const [like, setLikeValue] = useState(false);
     const [amountLike, setAmountLike] = useState(post.likes.length);
     const [dislike, setDislikeValue] = useState(false);
     const [amountDislike, setAmountDislike] = useState(post.dislikes.length);
-    const navigate = useNavigate();
     const [dislikeColor, setDislikeColor] = useState("#ffffff");
     const [likeColor, setLikeColor] = useState("#ffffff");
+    const [userId, setUserId] = useState();
 
     useEffect(() => {
-        if (post.likes.includes(localStorage.getItem('userId'))){
-            setLike(true);
-        }
-        if (post.dislikes.includes(localStorage.getItem('userId'))){
-            setDislike(true);
-        }
+        getUserId()
+        .then(function(userId){
+            setUserId(userId)
+            if (post.likes.includes(userId)){
+                setLike(true);
+            }
+            if (post.dislikes.includes(userId)){
+                setDislike(true);
+            }
+        })
+        .catch(function(err){console.log(err)})
     }, [post.likes, post.dislikes]);
 
     function setLike(bool){
@@ -41,23 +46,12 @@ export default function PostBox({ post, HandleDeletePost }) {
     }
 
     function HandleLike(){
-        const header = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-
         const payload = {
-            userId: localStorage.getItem('userId'),
             postId: post.id,
             like: !like
         }
         
-        axios.post('/api/likeEvent',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-        }});
+        axios.post('/api/likeEvent',payload)
 
         setLike(!like);
 
@@ -75,23 +69,12 @@ export default function PostBox({ post, HandleDeletePost }) {
     }
 
     function HandleDislike(){
-        const header = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-
         const payload = {
-            userId: localStorage.getItem('userId'),
             postId: post.id,
             dislike: !dislike
         }
         
-        axios.post('/api/dislikeEvent',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-        }});
+        axios.post('/api/dislikeEvent',payload)
 
         setDislike(!dislike);
 
@@ -113,7 +96,7 @@ export default function PostBox({ post, HandleDeletePost }) {
             <div className='absolute -top-3 -left-4 pl-2 pr-2 bg-gray-700 rounded-lg'>
                 <p>{post.creator}</p>
             </div>
-            {post.creator === localStorage.getItem('userId') && (
+            {post.creator === userId && (
                 <button onClick={()=>HandleDeletePost(post.id, post.creator)} className='absolute -top-4 -right-4 p-2 bg-gray-700 rounded-full'>
                     <svg className='w-7 hover:stroke-white stroke-gray-300' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path className="" d="M16 8L8 16M8.00001 8L16 16M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getUserId } from "../config/firebase";
 
 export default function PostCreateBox({HandleCreatePost}){
-    const userId = localStorage.getItem('userId');
+    const [userId, setUserId] = useState();
+
+    useEffect(() => {
+        getUserId()
+        .then(function(userId){setUserId(userId)})
+    }, [])
 
     function HandlePost(){
         HandleCreatePost(document.getElementById("post_title").value, document.getElementById("post_text").value);
@@ -10,7 +16,9 @@ export default function PostCreateBox({HandleCreatePost}){
     return (
         <div className='relative h-full w-full bg-gray-700 mb-10 rounded-lg ml-auto mr-auto'>
             <div className='absolute -top-3 -left-4 pl-2 pr-2 bg-gray-700 rounded-lg'>
-                <p>{userId}</p>
+                {userId !== undefined && 
+                    <p>{userId}</p>
+                }
             </div>
             <div className='bg-gray-800 border-2 border-gray-200 p-4'>
                 <form className=''>

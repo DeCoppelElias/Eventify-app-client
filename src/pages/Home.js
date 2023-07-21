@@ -3,8 +3,8 @@ import React from 'react';
 export default function Home() {
 
   return (
-    <div className='bg-gray-600'>
-        <div className='h-full pt-20 pb-10'>
+    <div className='bg-gray-800 h-full'>
+        <div className='h-full pt-20 pb-10 overflow-auto'>
             <p className='text h-20 w-60 m-auto font-semibold text-6xl text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-pink-500'>Eventify</p>
             <p className='text-white mb-3 text-center text-lg font-normal'>Create Memorable Events with Ease</p>
             <p className='text-white text-lg mt-20 mb-20 ml-36 mr-auto w-1/4 font-thin text-center'>
@@ -26,7 +26,7 @@ export default function Home() {
                 Enjoy the freedom to create, share, and engage without breaking the bank.
             </p> 
             <p className='text-white text-lg mt-20 mb-20 ml-36 mr-auto w-1/4 font-thin text-center'>
-                Start creating exceptional events and fostering vibrant communities today with our Event Creation App. 
+                Start creating exceptional events and fostering vibrant communities today with Eventify. 
                 Let's make your vision a reality!
             </p>
         </div>

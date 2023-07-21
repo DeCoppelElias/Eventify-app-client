@@ -1,5 +1,4 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import PostBox from './PostBox';
 import PostCreateBox from './PostCreateBox';
@@ -15,7 +14,6 @@ export interface CreatePostI{
 
 const PostList = forwardRef<CreatePostI, Props>(({ objectId, type }, ref) => {
     const [posts, setPosts] = useState([]);
-    const navigate = useNavigate();
     const [createPostVisibility, setCreatePostVisibility] = useState(false);
 
     useImperativeHandle(ref, () => {
@@ -31,32 +29,16 @@ const PostList = forwardRef<CreatePostI, Props>(({ objectId, type }, ref) => {
 
     function HandleCreatePost(postTitle: string, postText: string){
         setCreatePostVisibility(false);
-
-        const header = {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        }
-
         let payload = {
-            userId: localStorage.getItem('userId'),
             id: objectId,
             type: type,
             postTitle: postTitle,
             postText: postText
         }
 
-        axios.post('/api/createPost',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-            }
-        })
+        axios.post('/api/createPost',payload)
 
         let getPostPayload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: {
                 id: objectId,
                 type: type
@@ -65,42 +47,21 @@ const PostList = forwardRef<CreatePostI, Props>(({ objectId, type }, ref) => {
 
         axios.get('/api/getPosts', getPostPayload)
         .then(function (response) {
-            setPosts(response.data.posts);
+            setPosts(response?.data.posts);
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
     }
 
     function HandleDeletePost(postId: string, creatorId: string){
-        const header = {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        }
-
         let payload = {
-            userId: localStorage.getItem('userId'),
             id: objectId,
             type: type,
             postId: postId,
             creatorId: creatorId
         }
 
-        axios.post('/api/removePost',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-            }
-        })
+        axios.post('/api/removePost',payload)
 
         let getPostsPayload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: {
                 id: objectId,
                 type: type
@@ -109,19 +70,12 @@ const PostList = forwardRef<CreatePostI, Props>(({ objectId, type }, ref) => {
 
         axios.get('/api/getPosts', getPostsPayload)
         .then(function (response) {
-            setPosts(response.data.posts);
+            setPosts(response?.data.posts);
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
     }
 
     useEffect(() => {
         let payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: {
                 id: objectId,
                 type: type
@@ -130,15 +84,9 @@ const PostList = forwardRef<CreatePostI, Props>(({ objectId, type }, ref) => {
 
         axios.get('/api/getPosts', payload)
         .then(function (response) {
-            setPosts(response.data.posts);
+            setPosts(response?.data.posts);
         })
-        .catch(function (error) {
-            if (error.response) {
-              if (error.response.status === 400 || error.response.status === 401){
-                navigate('/login');
-              }
-            }})
-    }, [navigate, objectId, type])
+    }, [objectId, type])
 
     function HandleClickCreatePost(){
         setCreatePostVisibility(!createPostVisibility);

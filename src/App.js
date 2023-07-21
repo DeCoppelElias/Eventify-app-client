@@ -4,7 +4,6 @@ import Home from './pages/Home';
 import GroupsOverview from './pages/Groups/GroupsOverview';
 import GlobalSidebar from './components/GlobalSidebar';
 import Login from './pages/Login';
-import User from './pages/User';
 import EventsOverview from './pages/Events/EventsOverview';
 import Event from './pages/Events/Event';
 import PublicEvents from './pages/Events/PublicEvents'
@@ -19,16 +18,21 @@ import MaybeEvents from './pages/Events/MaybeEvents';
 import NotGoingEvents from './pages/Events/NotGoingEvents';
 import AnsweredEvents from './pages/Events/AnsweredEvents';
 import SubscribedGroups from './pages/Groups/SubscribedGroups';
+import EventCalendar from './pages/Calendar/EventCalendar';
+import Register from './pages/Register';
+import AxiosNavigation from './AxiosNavigation';
 
 function App() {
     return (
     <div className='h-full w-full'>
         <BrowserRouter>
+            <AxiosNavigation />
             <Routes>
                 <Route index element={<><GlobalSidebar /><Home /></>} />
                 <Route path="/home" element={<><GlobalSidebar /><Home /></>}/>
                 <Route path="/login" element={<Login />} />
-                <Route path="/user" element={<><GlobalSidebar /><User /></>}/>
+                <Route path="/register" element={<Register />} />
+                <Route path="/calendar" element={<><GlobalSidebar /><EventCalendar /></>}/>
                 <Route path="/events">
                     <Route index element={<><GlobalSidebar /><EventsOverview/></>} />
                     <Route path=":eventId" element={<><GlobalSidebar /><Event /></>}/>

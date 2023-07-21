@@ -1,7 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useEffect, useState } from 'react';
 import noImgIcon from '../icons/noImgIcon.svg'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
 import TagList from './TagList.js'
 
 function useComponentVisible(initialIsVisible, ResetState) {
@@ -33,7 +32,6 @@ const GroupPopup = forwardRef((props, ref) => {
     const [imageFilled, setImageFilled] = useState(true);
     const { innerRef, isComponentVisible , setIsComponentVisible} = useComponentVisible(false, ResetState);
     const tagListRef = useRef();
-    const navigate = useNavigate();
 
     function ResetState(){
         setTitleFilled(true);
@@ -83,14 +81,8 @@ const GroupPopup = forwardRef((props, ref) => {
         setIsComponentVisible(false)
 
         const imageType = imageFile.type.split("/")[1];
-        const header = {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        }
 
         const payload = {
-            userId: localStorage.getItem('userId'),
             title: title,
             description: description,
             restricted: restricted,
@@ -98,31 +90,18 @@ const GroupPopup = forwardRef((props, ref) => {
             imageType: imageType
         }
         
-        axios.post('/api/createGroup',payload, header)
-        .catch(function (error) {
-            if (error.response) {
-                if (error.response.status === 400 || error.response.status === 401){
-                    navigate('/login');
-                }
-        }})
+        axios.post('/api/createGroup',payload)
         .then(res => {
             const imagePayload = new FormData()
-            imagePayload.append('file', imageFile);
             imagePayload.append('groupId', res.data.groupId);
+            imagePayload.append('file', imageFile);
             const imageHeader = {
                 headers: { 
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Content-Type": "multipart/form-data"
                 },
             }
 
-            axios.post('/api/uploadGroupImage',imagePayload, imageHeader)
-            .catch(function (error) {
-                if (error.response) {
-                    if (error.response.status === 400 || error.response.status === 401){
-                        navigate('/login');
-                    }
-            }})
+            axios.post('/api/uploadGroupImage',imagePayload, imageHeader);
         })
     }
 
@@ -166,10 +145,7 @@ const GroupPopup = forwardRef((props, ref) => {
                                     )}
                                 </div>
                                 <div className='relative w-5/6 m-auto'>
-                                    <div className='flex text-white w-5/6 items-center pt-5'>
-                                        <p>Tags: </p>
-                                        <TagList ref={tagListRef}></TagList>
-                                    </div>
+                                    <TagList ref={tagListRef}></TagList>
                                     <form className='pt-5'>
                                         <div className='pb-4'>
                                             <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description *</label>

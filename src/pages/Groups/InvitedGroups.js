@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef} from 'react'
 import GroupList from '../../components/GroupList'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
 import GroupsSidebar from '../../components/GroupsSidebar'
 import SearchWithTagsBar from '../../components/SearchWithTagsBar';
 import CreateGroupPopup from '../../components/CreateGroupPopup';
@@ -9,22 +8,16 @@ import CreateGroupPopup from '../../components/CreateGroupPopup';
 export default function InvitedGroups() {
     const [groups, SetGroups] = useState([]);
     const [searchGroups, SetSearchGroups] = useState([]);
-    const navigate = useNavigate();
 
     const createGroupPopupRef = useRef();
 
     useEffect(() => {
-        const payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-            params: { userId : localStorage.getItem('userId')}
-        }
-        
-        axios.get('/api/getNotRepliedInvitedGroups', payload)
+        axios.get('/api/getNotRepliedInvitedGroups')
         .then(function (response) {
-            SetGroups(response.data.groups);
-            SetSearchGroups(response.data.groups);
+            SetGroups(response?.data.groups);
+            SetSearchGroups(response?.data.groups);
         })
-    }, [navigate])
+    }, [])
 
     function RefreshSearchGroups(query, tags){
         if (query.length === 0 && tags.length === 0){

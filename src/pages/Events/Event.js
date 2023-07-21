@@ -1,9 +1,10 @@
 import React, {useRef, useState, useEffect} from 'react'
 import axios from 'axios'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import EventInfoSidebar from '../../components/EventInfoSidebar';
 import EventInfo from '../../components/EventInfo';
 import InvitePeoplePopup from '../../components/InvitePeoplePopup';
+import { getUserId } from "../../config/firebase";
 
 export default function Event() {
     const [event, setEvent] = useState();
@@ -11,9 +12,7 @@ export default function Event() {
     const [administrator, setAdministrator] = useState(false);
     const invitePeoplePopupRef = useRef();
     const eventInfoRef = useRef();
-    const navigate = useNavigate();
     let {eventId} = useParams();
-    const userId = localStorage.getItem("userId");
 
     function HandleClickCreatePost(){
         eventInfoRef.current.HandleClickCreatePost();
@@ -25,21 +24,23 @@ export default function Event() {
 
     useEffect(() => {
         let payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             params: { eventId : eventId}
         }
 
         axios.get('/api/getEvent', payload)
         .then(function (response) {
-            setEvent(response.data.event);
+            setEvent(response?.data.event);
             setExists(true);
 
-            const index = response.data.event.administrators.indexOf(userId);
-            if (index > -1){
-                setAdministrator(true);
-            }
+            getUserId()
+            .then(function(userId){
+                const index = response?.data.event.administrators.indexOf(userId);
+                if (index > -1){
+                    setAdministrator(true);
+                }
+            })
         })
-    }, [navigate, eventId, userId]);
+    }, [eventId]);
 
     return (
         <div className='w-full h-full bg-gray-900 text-white'>

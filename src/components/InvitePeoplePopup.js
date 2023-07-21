@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { getUserId } from "../config/firebase"
 
 const InvitePeoplePopup = forwardRef(({type}, ref) => {
     const [componentVisible, setComponentVisible] = useState(false);
@@ -9,27 +10,23 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
     const [searchUsers, setSearchUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [invitedUsers, SetInvitedUsers] = useState([]);
-    const navigate = useNavigate();
     const {eventId} = useParams();
     const {groupId} = useParams();
-    const userId = localStorage.getItem("userId");
 
     const innerRef = useRef(null);
 
     useEffect(() => {
         let payload = {}
-        if (type == "group"){
+        if (type === "group"){
             payload = {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 params: { 
                     id : groupId,
                     type : type
                 }
             }
         }
-        if (type == "event"){
+        if (type === "event"){
             payload = {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 params: { 
                     id : eventId,
                     type : type
@@ -39,14 +36,9 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
 
         axios.get('/api/getInvitedUsers', payload)
             .then(function (response) {
-                SetInvitedUsers(response.data.invitedUsers)
-            }).catch(function (error) {
-                if (error.response) {
-                    if (error.response.status === 400 || error.response.status === 401){
-                        navigate('/login');
-                    }
-                }})
-    }, []);
+                SetInvitedUsers(response?.data.invitedUsers)
+            })
+    }, [eventId, groupId, type]);
 
     useEffect(() => {
         function ResetState(){
@@ -54,7 +46,7 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
             setTimeout(() => {
                 setSelectedUsers([]);
                 setSearchUsers(notInvitedUsers);
-                if(document.getElementById("users") != undefined){
+                if(document.getElementById("users") !== null){
                     document.getElementById("users").value = "";
                 }
             }, 300);
@@ -73,31 +65,29 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
     }, [notInvitedUsers]);
 
     useEffect(() => {
-        let payload = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-
-        axios.get('/api/getUsers', payload)
+        axios.get('/api/getUsers')
         .then(function (response) {
-            SetUsers(response.data.users);
+            SetUsers(response?.data.users);
         })
     }, []);
 
     useEffect(() => {
-        RefreshSearchUsers(users, invitedUsers);
-    }, [users, invitedUsers]);
-
-    function RefreshSearchUsers(users, invitedUsers){
-        const legalUsers = [];
-        for (const user of users){
-            const index = invitedUsers.indexOf(user.id);
-            if(index == -1 && user.id != userId){
-                legalUsers.push(user);
+        function RefreshSearchUsers(users, invitedUsers, userId){
+            const legalUsers = [];
+            for (const user of users){
+                const index = invitedUsers.indexOf(user.id);
+                if(index === -1 && user.id !== userId){
+                    legalUsers.push(user);
+                }
             }
+            SetNotInvitedUsers(legalUsers);
+            setSearchUsers(legalUsers);
         }
-        SetNotInvitedUsers(legalUsers);
-        setSearchUsers(legalUsers);
-    }
+        getUserId()
+        .then(function(userId){
+            RefreshSearchUsers(users, invitedUsers, userId);
+        })
+    }, [users, invitedUsers]);
 
     useImperativeHandle(ref, () => {
         return {
@@ -163,12 +153,6 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
     }
 
     function HandleInviteUsers(){
-        const header = {
-            headers: { 
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-        }
-
         const newInvitedUsers = [];
         const newTotalInvitedUsers = [...invitedUsers]
         for (const user of selectedUsers){
@@ -183,13 +167,7 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
                 invitedUsers: newInvitedUsers
             }
             
-            axios.post('/api/inviteToGroup',payload, header)
-            .catch(function (error) {
-                if (error.response) {
-                    if (error.response.status === 400 || error.response.status === 401){
-                        navigate('/login');
-                    }
-            }})
+            axios.post('/api/inviteToGroup',payload)
         }
         if (type === "event"){
             const payload = {
@@ -197,13 +175,7 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
                 invitedUsers: newInvitedUsers
             }
             
-            axios.post('/api/inviteToEvent',payload, header)
-            .catch(function (error) {
-                if (error.response) {
-                    if (error.response.status === 400 || error.response.status === 401){
-                        navigate('/login');
-                    }
-            }})
+            axios.post('/api/inviteToEvent',payload)
         }
 
         setComponentVisible(false);
