@@ -84,7 +84,9 @@ const PostList = forwardRef<CreatePostI, Props>(({ objectId, type }, ref) => {
 
         axios.get('/api/getPosts', payload)
         .then(function (response) {
-            setPosts(response?.data.posts);
+            if(response?.data?.posts !== undefined){
+                setPosts(response?.data.posts);
+            }
         })
     }, [objectId, type])
 

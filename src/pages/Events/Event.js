@@ -7,8 +7,8 @@ import InvitePeoplePopup from '../../components/InvitePeoplePopup';
 import { getUserId } from "../../config/firebase";
 
 export default function Event() {
+    const [exists, setExists] = useState(true);
     const [event, setEvent] = useState();
-    const [exists, setExists] = useState(false);
     const [administrator, setAdministrator] = useState(false);
     const invitePeoplePopupRef = useRef();
     const eventInfoRef = useRef();
@@ -27,14 +27,16 @@ export default function Event() {
             params: { eventId : eventId}
         }
 
-        axios.get('/api/getEvent', payload)
+        axios.get('/api/events/getEvent', payload)
         .then(function (response) {
             setEvent(response?.data.event);
-            setExists(true);
+            if(response?.data?.event === undefined){
+                setExists(false);
+            }
 
             getUserId()
             .then(function(userId){
-                const index = response?.data.event.administrators.indexOf(userId);
+                const index = response?.data?.event?.administrators.indexOf(userId);
                 if (index > -1){
                     setAdministrator(true);
                 }
@@ -44,7 +46,7 @@ export default function Event() {
 
     return (
         <div className='w-full h-full bg-gray-900 text-white'>
-            {exists ? (
+            {event !== undefined ? (
                 <div className='h-full w-full flex'>
                     <InvitePeoplePopup type="event" ref={invitePeoplePopupRef}/>
                     <div className='flex h-full w-full'>
@@ -65,7 +67,9 @@ export default function Event() {
                     </div>
                 </div>
             ) : (
-                <p>Event does not exist</p>
+                <>{!exists && 
+                    <p className='pt-28 text-white text-center'>Event does not exist</p>
+                }</>
             )}
         </div>
     );

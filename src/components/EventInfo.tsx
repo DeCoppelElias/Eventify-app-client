@@ -98,10 +98,10 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
     function HandleGoing(){
         const payload = {
             eventId: event.id,
-            going: state !== State.going
+            going: state !== State.going,
         }
         
-        axios.post('/api/setGoing',payload)
+        axios.post('/api/events/setGoing',payload)
         
         if (state === State.maybe){
             setAmountMaybe(amountMaybe-1);
@@ -125,10 +125,10 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
     function HandleMaybe(){
         const payload = {
             eventId: event.id,
-            maybe: state !== State.maybe
+            maybe: state !== State.maybe,
         }
         
-        axios.post('/api/setMaybe',payload)
+        axios.post('/api/events/setMaybe',payload)
 
         if (state === State.going){
             setAmountGoing(amountGoing-1);
@@ -152,10 +152,9 @@ const EventInfo:React.FC<Props> = forwardRef(({event}, ref) => {
     function HandleNotGoing(){
         const payload = {
             eventId: event.id,
-            notGoing: state !== State.notgoing
+            notGoing: state !== State.notgoing,
         }
-        
-        axios.post('/api/setNotGoing',payload)
+        axios.post('/api/events/setNotGoing',payload)
 
         if (state === State.going){
             setAmountGoing(amountGoing-1);

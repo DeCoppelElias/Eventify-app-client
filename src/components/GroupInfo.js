@@ -33,7 +33,7 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
                     groupId: group.id
                 }
                 
-                axios.post('/api/subscribeToGroup',payload)
+                axios.post('/api/groups/subscribeToGroup',payload)
                 .then(res => {
                     setSubscribed(true);
                     setAmountSubscribed(a => a+1)
@@ -45,7 +45,7 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
                     groupId: group.id
                 }
                 
-                axios.post('/api/unSubscribeFromGroup',payload)
+                axios.post('/api/groups/unSubscribeFromGroup',payload)
                 .then(res => {
                     setSubscribed(false);
                     setAmountSubscribed(a => a-1);
@@ -56,14 +56,15 @@ const GroupInfo = forwardRef(({group, NotifySubscribed}, ref) => {
     }, [group.id, NotifySubscribed]);
 
     useEffect(() => {
-        const payload = {
-            params: { eventIds : group.events}
+        if(group.events?.length > 0) {
+            const payload = {
+                params: { eventIds : group.events}
+            }
+            axios.get('/api/events/getEvents', payload)
+            .then(function (response) {
+                setEvents(response?.data.events);
+            })
         }
-
-        axios.get('/api/getEvents', payload)
-        .then(function (response) {
-            setEvents(response?.data.events);
-        })
 
         let tags = ""
         if (group.tags.length > 0){

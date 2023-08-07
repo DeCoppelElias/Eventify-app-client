@@ -12,21 +12,21 @@ export default function GroupsOverview() {
     const createGroupPopupRef = useRef();
 
     useEffect(() => {
-        axios.get('/api/getPublicGroups')
+        axios.get('/api/groups/getPublicGroups')
         .then(function (response) {
             if (response?.data.groups.length > 0){
                 setPublicGroupData(response?.data);
             }
         })
         
-        axios.get('/api/getNotRepliedInvitedGroups')
+        axios.get('/api/groups/getNotRepliedInvitedGroups')
         .then(function (response) {
             if (response?.data.groups.length > 0){
                 setInvitedGroupData(response?.data);
             }
         })
         
-        axios.get('/api/getYourGroups')
+        axios.get('/api/groups/getYourGroups')
         .then(function (response) {
             if (response?.data.groups.length > 0){
                 setYourGroupData(response?.data);
@@ -38,7 +38,7 @@ export default function GroupsOverview() {
         <div className='flex h-full w-full'>
             <CreateGroupPopup ref={createGroupPopupRef}/>
             <div className='h-full w-full bg-gray-900 pr-20 pl-20'>
-                <GroupsSidebar createGroupPopupRef={createGroupPopupRef}/>
+                <GroupsSidebar state={"GroupsOverview"} createGroupPopupRef={createGroupPopupRef}/>
                 <div className='w-full h-full pt-28'>
                     <div className='overflow-auto h-full'>
                         {yourGroupData.groups !== undefined && 

@@ -90,7 +90,7 @@ const GroupPopup = forwardRef((props, ref) => {
             imageType: imageType
         }
         
-        axios.post('/api/createGroup',payload)
+        axios.post('/api/groups/createGroup',payload)
         .then(res => {
             const imagePayload = new FormData()
             imagePayload.append('groupId', res.data.groupId);

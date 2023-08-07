@@ -36,7 +36,9 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
 
         axios.get('/api/getInvitedUsers', payload)
             .then(function (response) {
-                SetInvitedUsers(response?.data.invitedUsers)
+                if(response?.data?.invitedUsers !== undefined){
+                    SetInvitedUsers(response?.data.invitedUsers);
+                }
             })
     }, [eventId, groupId, type]);
 
@@ -175,47 +177,45 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
                 invitedUsers: newInvitedUsers
             }
             
-            axios.post('/api/inviteToEvent',payload)
+            axios.post('/api/events/inviteToEvent',payload)
         }
 
+        setSelectedUsers([]);
+        document.getElementById("users").value = "";
         setComponentVisible(false);
-        setTimeout(() => {
-            setSelectedUsers([]);
-            if (document.getElementById("users") !== undefined){
-                document.getElementById("users").value = "";
-            }
-        }, 300);
     }
 
     return (
-        <div className={`h-full w-full absolute top-0 left-0 overflow-hidden pointer-events-none`}>
-            <div className={`h-full w-full absolute top-0 left-0 z-10 ease-in-out duration-300 pointer-events-auto ${componentVisible ? "translate-x-0 " : "translate-x-full"}`}>
-                <div ref={innerRef} className={`z-20 bg-gray-800 border-2 border-gray-600 absolute top-0 right-0 w-1/5 h-full rounded-md pointer-events-auto`}>
-                    <div className='m-8'>
-                        <label htmlFor="users" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Invite people</label>
-                        <div className=''>
-                            <input onChange={() => HandleSearch(selectedUsers)} type="text" maxLength={40} id="users" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+        <>{componentVisible && 
+            <div className={`h-full w-full absolute top-0 left-0 z-30 pointer-events-auto`}>
+                <div ref={innerRef} className={`z-20 bg-gray-800 border-2 border-gray-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-4/5 w-2/5 rounded-md`}>
+                    <div className='w-full h-5/6 p-8'>
+                        <div className="h-1/5">
+                            <label htmlFor="users" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Invite people</label>
+                            <div className=''>
+                                <input onChange={() => HandleSearch(selectedUsers)} type="text" maxLength={40} id="users" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required/>
+                            </div>
                         </div>
-                        <div className="overflow-auto h-full w-full mt-4 mb-4">
-                            <div className="h-full mb-4">
+                        <div className="overflow-auto h-4/5">
+                            <div className="mb-4">
                                 {selectedUsers.map((user) => (
                                     <div key={user.id} onClick={() => DeselectUser(user)} className="pt-2">
                                         <input defaultChecked type="checkbox" id={user.id} value="" className="hidden peer" required="" />
                                         <label htmlFor={user.id} className="inline-flex items-center justify-between w-full p-3 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
                                             <div className="block">
-                                                <p className="w-full">{String(user.firstName) + " " + String(user.lastName)}</p>
+                                                <p className="w-full">{user.username}</p>
                                             </div>
                                         </label>
                                     </div>
                                 ))}
                             </div>
-                            <div className="h-full">
+                            <div className="overflow-auto">
                                 {searchUsers.map((user) => (
                                     <div key={user.id} onClick={() => SelectUser(user)} className="pt-2">
                                         <input type="checkbox" id={user.id} value="" className="hidden peer" required="" />
                                         <label htmlFor={user.id} className="inline-flex items-center justify-between w-full p-3 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
                                             <div className="block">
-                                                <p className="w-full">{String(user.firstName) + " " + String(user.lastName)}</p>
+                                                <p className="w-full">{user.username}</p>
                                             </div>
                                         </label>
                                     </div>
@@ -228,7 +228,7 @@ const InvitePeoplePopup = forwardRef(({type}, ref) => {
                     </button>
                 </div>
             </div>
-        </div>
+        }</>
     )
 })
 

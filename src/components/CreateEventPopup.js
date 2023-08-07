@@ -146,7 +146,7 @@ const EventPopup = forwardRef((props, ref) => {
             imageType: imageType
         }
         
-        axios.post('/api/createEvent',payload)
+        axios.post('/api/events/createEvent',payload)
         .then(res => {
             const imagePayload = new FormData()
             imagePayload.append('eventId', res.data.eventId);

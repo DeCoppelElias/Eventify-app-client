@@ -51,7 +51,7 @@ export default function PostBox({ post, HandleDeletePost }) {
             like: !like
         }
         
-        axios.post('/api/likeEvent',payload)
+        axios.post('/api/likePost',payload)
 
         setLike(!like);
 
@@ -74,7 +74,7 @@ export default function PostBox({ post, HandleDeletePost }) {
             dislike: !dislike
         }
         
-        axios.post('/api/dislikeEvent',payload)
+        axios.post('/api/dislikePost',payload)
 
         setDislike(!dislike);
 

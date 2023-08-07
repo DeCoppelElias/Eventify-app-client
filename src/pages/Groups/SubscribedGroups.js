@@ -12,7 +12,7 @@ export default function PublicGroups() {
     const createGroupPopupRef = useRef();
 
     useEffect(() => {
-        axios.get('/api/getSubscribedGroups')
+        axios.get('/api/groups/getSubscribedGroups')
         .then(function (response) {
             SetGroups(response?.data.groups);
             SetSearchGroups(response?.data.groups);
@@ -53,7 +53,7 @@ export default function PublicGroups() {
         <div className='flex h-full w-full'>
             <CreateGroupPopup ref={createGroupPopupRef}/>
             <div className='h-full w-full bg-gray-900 pr-20 pl-20'>
-                <GroupsSidebar createGroupPopupRef={createGroupPopupRef}/>
+                <GroupsSidebar state={"SubscribedGroups"} createGroupPopupRef={createGroupPopupRef}/>
                 <div className='w-full h-full pt-28'>
                     <div className='overflow-auto h-full'>
                         <div className='bg-gray-800 rounded-md mb-10 w-full'>

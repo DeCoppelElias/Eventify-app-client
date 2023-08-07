@@ -6,7 +6,7 @@
         "outDir": "./dist",
         "strict": true,
         "esModuleInterop": true,
-        "paths": { "@backend/*": ["../server/datatypes/*"], },
+        "paths": { "@backend/*": ["../server/src/datatypes/*"], },
         "allowJs": true
     },
     "include": [

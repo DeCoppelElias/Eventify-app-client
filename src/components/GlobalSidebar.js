@@ -1,13 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
-import axios from 'axios';
 import eventsIcon from '../icons/eventsIcon.svg';
 import homeIcon from '../icons/homeIcon.svg';
 import groupsIcon from '../icons/groupsIcon.svg';
 import noImgIcon from '../icons/noImgIcon.svg';
+import calendarIcon from '../icons/calendarIcon.svg'
 import UserInfoPopup from './UserInfoPopup';
 import { getUser } from '../config/firebase';
 
-const GlobalSidebar = () => {
+const GlobalSidebar = ({state}) => {
     const [user, setUser] = useState();
     const userInfoRef = useRef();
 
@@ -22,6 +22,10 @@ const GlobalSidebar = () => {
         userInfoRef.current.SetComponentVisible();
     }
 
+    function classNames(...classes) {
+        return classes.filter(Boolean).join(' ')
+    }
+
     return (
         <div className='absolute top-0 left-0 w-full h-full pointer-events-none z-20'>
             <div className= 'flex top-0 w-full bg-gray-800 text-center border-b-2 border-gray-700 pointer-events-auto'>
@@ -29,7 +33,10 @@ const GlobalSidebar = () => {
                 <div className='w-1/4'></div>
                 <div className='flex mt-2 justify-center w-1/2'>
                     <div className='m-auto'>
-                        <a href="/home" className='flex transition duration-150 border-b-2 border-transparent hover:border-white'>
+                        <a href="/home" className={classNames(
+                            state === "Home" && "border-red-500",
+                            state !== "Home" && "border-transparent",
+                            "flex transition duration-150 border-b-2 hover:border-red-500")}>
                             <div className='w-7 mb-2 mr-1'>
                                 <img alt="" src={homeIcon}></img> 
                             </div>
@@ -39,7 +46,10 @@ const GlobalSidebar = () => {
                         </a>
                     </div>
                     <div className='m-auto'>
-                        <a href="/events" className='flex transition duration-150 border-b-2 border-transparent hover:border-white'>
+                        <a href="/events" className={classNames(
+                            state === "Events" && "border-red-500",
+                            state !== "Events" && "border-transparent",
+                            "flex transition duration-150 border-b-2 hover:border-red-500")}>
                             <div className='w-7 mb-2 mr-1'>
                                 <img alt="" src={eventsIcon}></img> 
                             </div>
@@ -49,7 +59,10 @@ const GlobalSidebar = () => {
                         </a>
                     </div>
                     <div className='m-auto'>
-                        <a href="/groups" className='flex transition duration-150 border-b-2 border-transparent hover:border-white'>
+                        <a href="/groups" className={classNames(
+                            state === "Groups" && "border-red-500",
+                            state !== "Groups" && "border-transparent",
+                            "flex transition duration-150 border-b-2 hover:border-red-500")}>
                             <div className='w-7 mb-2 mr-1'>
                                 <img alt="" src={groupsIcon}></img> 
                             </div>
@@ -59,9 +72,12 @@ const GlobalSidebar = () => {
                         </a>
                     </div>
                     <div className='m-auto'>
-                        <a href="/calendar" className='flex transition duration-150 border-b-2 border-transparent hover:border-white'>
+                        <a href="/calendar" className={classNames(
+                            state === "Calendar" && "border-red-500",
+                            state !== "Calendar" && "border-transparent",
+                            "flex transition duration-150 border-b-2 hover:border-red-500")}>
                             <div className='w-7 mb-2 mr-1'>
-                                <img alt="" src={groupsIcon}></img> 
+                                <img alt="" src={calendarIcon}></img> 
                             </div>
                             <div className='m-auto text-white'>
                                 Calender

@@ -12,17 +12,17 @@ export default function EventsOverview() {
     const createEventPopupRef = useRef();
 
     useEffect(() => {
-        axios.get('/api/getGoingEvents')
+        axios.get('/api/events/getGoingEvents')
         .then(function (response) {
             setGoingEvents(response?.data.events);
         })
         
-        axios.get('/api/getMaybeEvents')
+        axios.get('/api/events/getMaybeEvents')
         .then(function (response) {
             setMaybeEvents(response?.data.events);
         })
         
-        axios.get('/api/getNotGoingEvents')
+        axios.get('/api/events/getNotGoingEvents')
         .then(function (response) {
             setNotGoingEvents(response?.data.events);
         })
@@ -32,7 +32,7 @@ export default function EventsOverview() {
     <div className='flex h-full w-full'>
         <CreateEventPopup ref={createEventPopupRef}/>
         <div className='h-full w-full bg-gray-900 pr-20 pl-20'>
-            <EventsSidebar createEventPopupRef={createEventPopupRef}/>
+            <EventsSidebar state={"AnsweredEvents"} createEventPopupRef={createEventPopupRef}/>
             <div className='w-full h-full pt-28'>
                 <div className='overflow-auto h-full'>
                     <div className='bg-gray-800 rounded-md mb-10 w-full'>

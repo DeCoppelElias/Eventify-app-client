@@ -51,7 +51,7 @@ const SelectGroupList = forwardRef((props, ref) => {
     };
 
     useEffect(() => {
-        axios.get('/api/getAdministratorGroups')
+        axios.get('/api/groups/getAdministratorGroups')
         .then(function (response) {
             setAdministratorGroups(response?.data.groups);
             setSearchGroups(response?.data.groups);

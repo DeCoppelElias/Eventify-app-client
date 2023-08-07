@@ -10,14 +10,14 @@ export default function EventsOverview() {
     const createEventPopupRef = useRef();
 
     useEffect(() => {
-        axios.get('/api/getPublicEvents')
+        axios.get('/api/events/getPublicEvents')
         .then(function (response) {
             if (response?.data.events.length > 0){
                 setPublicEventData(response?.data);
             }
         })
         
-        axios.get('/api/getNotRepliedInvitedEvents')
+        axios.get('/api/events/getNotRepliedInvitedEvents')
         .then(function (response) {
             if (response?.data.events.length > 0){
                 setInvitedEventData(response?.data);
@@ -29,7 +29,7 @@ export default function EventsOverview() {
     <div className='flex h-full w-full'>
         <CreateEventPopup ref={createEventPopupRef}/>
         <div className='h-full w-full bg-gray-900 pr-20 pl-20'>
-            <EventsSidebar createEventPopupRef={createEventPopupRef}/>
+            <EventsSidebar state={"EventsOverview"} createEventPopupRef={createEventPopupRef}/>
             <div className='w-full h-full pt-28'>
                 <div className='overflow-auto h-full'>
                     {invitedEventData.events !== undefined && 

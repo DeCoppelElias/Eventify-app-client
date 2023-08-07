@@ -12,7 +12,7 @@ export default function GoingEvents() {
     const createEventPopupRef = useRef();
 
     useEffect(() => {
-        axios.get('/api/getGoingEvents')
+        axios.get('/api/events/getGoingEvents')
         .then(function (response) {
             setEvents(response?.data.events);
             setSearchEvents(response?.data.events);
@@ -53,7 +53,7 @@ export default function GoingEvents() {
         <div className='flex h-full w-full'>
             <CreateEventPopup ref={createEventPopupRef}/>
             <div className='h-full w-full bg-gray-900 pr-20 pl-20'>
-                <EventsSidebar createEventPopupRef={createEventPopupRef}/>
+                <EventsSidebar state={"GoingEvents"} createEventPopupRef={createEventPopupRef}/>
                 <div className='w-full h-full pt-28'>
                     <div className='overflow-auto h-full'>
                         <div className='bg-gray-800 rounded-md mb-10 w-full'>

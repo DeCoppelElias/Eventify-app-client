@@ -48,18 +48,20 @@ export default function Group() {
             params: { groupId : groupId}
         }
 
-        axios.get('/api/getGroup', payload)
+        axios.get('/api/groups/getGroup', payload)
         .then(function (response) {
-            setGroup(response?.data.group);
-            setExists(true);
+            if(response?.data?.group !== undefined){
+                setGroup(response?.data.group);
+                setExists(true);
 
-            getUserId()
-            .then(function(userId){
-                const index = response?.data.group.administrators.indexOf(userId);
-                if (index > -1){
-                    setAdministrator(true);
-                }
-            })
+                getUserId()
+                .then(function(userId){
+                    const index = response?.data.group.administrators.indexOf(userId);
+                    if (index > -1){
+                        setAdministrator(true);
+                    }
+                })
+            }
         })
     }, [groupId]);
     

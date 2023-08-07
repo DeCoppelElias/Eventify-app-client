@@ -3,7 +3,6 @@ import PrettyButton from './PrettyButton';
 import PostIcon from '../icons/postIcon.svg';
 
 export default function EventInfoSidebar({HandleInvitePeople, HandleClickCreatePost, administrator, restricted}){
-
     return (
         <div className='relative w-full top-14'>
             <div className='absolute flex w-full lg:text-base md:text-xs sm:text-xs text-white'>

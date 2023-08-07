@@ -4,6 +4,9 @@ import noImgIcon from '../icons/noImgIcon.svg';
 import tagIcon from '../icons/tagIcon.svg';
 import locationIcon from '../icons/locationIcon.svg';
 import dateIcon from '../icons/dateIcon.svg';
+import {
+    format,
+} from 'date-fns'
 import axios from 'axios';
 
 export default function EventBox({ event }) {
@@ -20,7 +23,7 @@ export default function EventBox({ event }) {
         const day = startTime.getDate();
         const month = months[startTime.getMonth()];
         const year = startTime.getFullYear();
-        currentDate = `${weekday} ${day} ${month} ${year}`;
+        currentDate = `${weekday} ${day} ${month} ${year}: ${format(startTime, 'h:mm a')} - ${format(endTime, 'h:mm a')}`;
     }
     
     let tags = ""
