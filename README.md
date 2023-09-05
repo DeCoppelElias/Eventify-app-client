@@ -1,70 +1,12 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Eventfy project
+## About
+This repository is the app server of my Eventify application. This project was used to gain experience in working with javascript and learning how to build a full stack application. This application allows users to create, manage and share events. Users can create events, create groups, invite other users to events and groups, create events in groups and much more. The project also includes a calander that is automatically updated with the events relevant to the user. This application also contains basic authentication to ensure that user credentials cannot be stolen. The front-end is made with javascript and a little typescript with the React library and Tailwind framework. The back-end in build with javascript with the Express web application framework. Feel free to look at/use the code. Beware however, this is my first ever javascript project. There will be a lot of bugs/inefficiencies.
+## Features/What I learned
+- Front-end in javascript/typescript with React library and Tailwind framework.
+- Back-end in javascript with Express framework.
+- Authentication using Firebase Authentication.
+- Storing data in the cloud database Firestore.
+- Creating, managing and sharing events and groups.
+- A calendar displaying the different events in time of the current user.
+## Development challenges
+This project was my first experience trying to develop a full stack application. Working with the different libraries and frameworks was confusing at first, but after watching many tutorials it started making sense. After learning the basics of javascript, I started working on the front-end with a basic back-end. At first, I build the front-end with pure css and html. I found it very hard to make the site look pretty. Luckily, a friend introduced me to the Tailwind css framework. It took some time to learn how to use Tailwind, but the site was making good progress on how it looked. Meanwhile, I was also adding some basic functionality to the back-end and also created a test setup. This allowed me to more easily debug and test the application. Then, I kept working on both the front-end and back-end alternately to keep adding more features. After having enough features, it was time to develop authentication. I had already worked with Firebase Authentication before because of university. So implementing this did not take much time. Then, I wanted to use a cloud database to store the different events and groups. I could not decide between MongoDB and Firestore. Eventually, I chose Firestore because it integrated easily with the Firebase Authentication. All information about the authentication and database could easily be found in the Firestore console. This is the current state of the project. I could still update this project in the future but this was mainly meant to be a learning experience.
